@@ -1,0 +1,86 @@
+.css-emoticon {
+  font-size: 0px;
+  display:inline-block;
+  height:15px;
+  width: 15px;
+  vertical-align:middle;
+}
+.css-emoticon.lol {
+  background: url('../images/icon_lol.gif');
+}
+.css-emoticon.oops{
+  background: url('../images/icon_redface.gif');
+}
+.css-emoticon.cry{
+ background: url('../images/icon_cry.gif');
+}
+.css-emoticon.roll{
+background: url('../images/icon_rolleyes.gif');
+}
+.css-emoticon.exclaim {
+  background: url('../images/icon_exclaim.gif');
+}
+.css-emoticon.question {
+  background: url('../images/icon_quesrion.gif');
+}
+.css-emoticon.idea {
+  background: url('../images/icon_idea.gif');
+}
+.css-emoticon.arrow {
+  background: url('../images/icon_arrow.gif');
+}
+.css-emoticon.mrgreen{
+  background: url('../images/icon_mrgreen.gif');
+}
+.css-emoticon.smile{
+  background: url('../images/sprites.png');
+  background-position: -16px -18px ;
+}
+.css-emoticon.biggrin{
+  background: url('../images/sprites.png');
+  background-position: -69px -18px ;
+}
+.css-emoticon.sad{
+  background: url('../images/sprites.png');
+  background-position: -116px -18px ;
+}
+.css-emoticon.shock{
+  background: url('../images/sprites.png');
+  background-position: -167px -18px ;
+}
+.css-emoticon.confused{
+  background: url('../images/sprites.png');
+  background-position: -218px -18px ;
+}
+.css-emoticon.cool{
+  background: url('../images/sprites.png');
+  background-position: -16px -68px ;
+}
+.css-emoticon.mad{
+  background: url('../images/sprites.png');
+  background-position: -68px -68px ;
+}
+.css-emoticon.razz{
+  background: url('../images/sprites.png');
+  background-position: -118px -68px ;
+}
+.css-emoticon.neutral{
+  background: url('../images/sprites.png');
+  background-position: -168px -68px ;
+}
+.css-emoticon.wink{
+  background: url('../images/sprites.png');
+  background-position: -218px -68px ;
+}
+.css-emoticon.evil{
+   background: url('../images/sprites.png');
+  background-position: -15px -118px ;
+}
+.css-emoticon.twisted {
+  background: url('../images/sprites.png');
+  background-position: -68px -118px ;
+}
+.css-emoticon.eek {
+  background: url('../images/sprites.png');
+  background-position: -118px -118px ;
+}

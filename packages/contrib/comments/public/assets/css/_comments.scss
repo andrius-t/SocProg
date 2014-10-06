@@ -1,0 +1,79 @@
+.comments-container {
+  padding: 10px;
+  background: $article-content-back;
+  .post-image img {
+    width: 35px;
+    height: 35px;
+    float: left;
+    border: 1px solid $black;
+    margin-right: 10px;
+  }
+  .input-group {
+    margin-bottom: 0;
+    width: 92%;
+  }
+  .comment {
+    padding: 5px 0 10px 5px;
+    border-bottom: 1px solid $comment-border;
+    .comment-author{
+      a{
+        color:$comment-author;
+        &:hover{
+          text-decoration: none;
+        }
+      }
+
+    }
+    .post-image {
+      img {
+        margin-right: 10px;
+      }
+    }
+    .comment-body-container {
+      display: table;
+      .comment-remove{
+        .comment-button{
+          color: $comment-remove-btn;
+          cursor: pointer;
+          text-decoration: none;
+          &:hover{
+            color: $comment-remove-hover;
+          }
+        }
+      }
+      .mention-user{
+        color:$comment-mention-user;
+      }
+    }
+  }
+}
+
+.load-more-comment {
+  a {
+   text-decoration: underline;
+   cursor: pointer;
+   text-decoration:underline;
+   &:hover{
+    color: $more-comment-hover;
+   }
+ }
+}
+.comment-items {
+  padding: 5px 0px;
+  + .comment-form {
+    padding: 5px 0px;
+  }
+}
+
+.comment-time-ago {
+  color: $like-list-link-hover;
+}
+
+.comment-button {
+  padding: 5px;
+}
+
+.comments-outer-wrapper{
+  width: 98%;
+  margin-bottom: 15px;
+}

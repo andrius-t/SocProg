@@ -1,0 +1,24 @@
+{
+  "name": "angular-emoticons",
+  "version": "0.0.1",
+  "description": "This directive allows you to parse emoticons.",
+  "author": "QED42",
+  "license": "MIT",
+  "homepage": "http://angular-ui.github.com",
+  "main": "./javascript/angular-emoticons.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "test*",
+    "demo*",
+    "gruntFile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "~1.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.x"
+  }
+}

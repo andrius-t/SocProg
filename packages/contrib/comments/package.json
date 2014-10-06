@@ -1,0 +1,17 @@
+{
+  "name": "comments",
+  "version": "0.0.4",
+  "description": "Enable comments with mentions and emoticons on your site",
+  "author": {
+    "name": "QED42"
+  },
+  "scripts": {
+    "postinstall": "bower install"
+  },
+  "mean": "0.4.0",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.x"
+  },
+  "license": "MIT"
+}

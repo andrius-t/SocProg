@@ -1,0 +1,23 @@
+<div class ="comments-container comment-form">
+  <form id="comment-{{parent._id}}" class="form-horizontal center-block comment-{{parent._id}}"  data-ng-submit="create(body, parent,taggedUsers)">
+    <div class="post-image">
+      <img ng-src ="{{global.user.picture}}">
+    </div>
+    <p class="input-group">
+      <span ng-class="class">
+        <textarea name="comment" msd-elastic cols="30" id="comment-message" rows="1" placeholder="Write a comment..." data-ng-model="body" class="form-control" required mentio-for="'comment-message'" mentio-trigger-char="'@'" mentio-items="people" mentio-template-url="/people-mentions.tpl" mentio-search="searchPeople(term)" mentio-select="getCommentPeopleTextRaw(item)" mentio-typed-term="typedTerm2" mentio mentio-macros="macros"></textarea>
+      </span>
+      <input type="hidden" data-ng-model="comment" name="comment" value="{{comment._id}}"/>
+      <span class="input-group-btn">
+        <input type="submit" class="btn btn-default pull-right comment-{{parent._id}}" value="Comment"/>
+      </span>
+    </p>
+  </form>
+</div>
+<script type="text/ng-template" id="/people-mentions.tpl">
+  <ul class="list-group user-search">
+    <li mentio-menu-item="person" ng-repeat="person in items" class="list-group-item">
+      <span ng-bind-html="person.name | mentioHighlight:typedTerm:'menu-highlighted' | unsafe"></span>
+    </li>
+  </ul>
+</script>
