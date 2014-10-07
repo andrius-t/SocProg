@@ -14,7 +14,7 @@ var Thing = require('./thing.model');
 
 // Get list of things
 exports.index = function(req, res) {
-  Thing.find(function (err, things) {
+  Thing.find().populate('user', 'email name').exec(function(err, things){
     if(err) { return handleError(res, err); }
     return res.json(200, things);
   });
@@ -31,7 +31,15 @@ exports.show = function(req, res) {
 
 // Creates a new thing in the DB.
 exports.create = function(req, res) {
+
+
+  // Attach to object current user
+  req.body.user = req.user;
+
   Thing.create(req.body, function(err, thing) {
+
+    // TODO pass user name
+    console.log(thing);
     if(err) { return handleError(res, err); }
     return res.json(201, thing);
   });
