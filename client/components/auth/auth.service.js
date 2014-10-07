@@ -5,6 +5,7 @@ angular.module('socProgApp')
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
+
     }
 
     return {

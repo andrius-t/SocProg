@@ -4,6 +4,10 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ThingSchema = new Schema({
+    created: {
+        type: Date,
+        default: Date.now
+    },
   name: String,
   info: String,
   active: Boolean,

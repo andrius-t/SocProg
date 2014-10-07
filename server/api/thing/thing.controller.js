@@ -14,7 +14,7 @@ var Thing = require('./thing.model');
 
 // Get list of things
 exports.index = function(req, res) {
-  Thing.find().populate('user', 'email name').exec(function(err, things){
+  Thing.find().sort({ created: -1}).populate('user', 'email name').exec(function(err, things){
     if(err) { return handleError(res, err); }
     return res.json(200, things);
   });
