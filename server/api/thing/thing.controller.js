@@ -32,16 +32,12 @@ exports.show = function(req, res) {
 // Creates a new thing in the DB.
 exports.create = function(req, res) {
 
-
   // Attach to object current user
   req.body.user = req.user;
 
   Thing.create(req.body, function(err, thing) {
-
-    // TODO pass user name
-    console.log(thing);
     if(err) { return handleError(res, err); }
-    return res.json(201, thing);
+    return res.json(201, {});
   });
 };
 
