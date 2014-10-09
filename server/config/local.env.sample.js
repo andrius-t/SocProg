@@ -9,6 +9,9 @@ module.exports = {
   DOMAIN:           'http://localhost:9000',
   SESSION_SECRET:   'socprog-secret',
 
+  GITHUB_ID:        'app-id',
+  GITHUB_SECRET:    'secret',
+
   FACEBOOK_ID:      'app-id',
   FACEBOOK_SECRET:  'secret',
 

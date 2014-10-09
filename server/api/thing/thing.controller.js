@@ -11,6 +11,9 @@
 
 var _ = require('lodash');
 var Thing = require('./thing.model');
+var GitHubApi = require("github");
+
+
 
 // Get list of things
 exports.index = function(req, res) {
@@ -22,11 +25,25 @@ exports.index = function(req, res) {
 
 // Get a single thing
 exports.show = function(req, res) {
-  Thing.findById(req.params.id, function (err, thing) {
-    if(err) { return handleError(res, err); }
-    if(!thing) { return res.send(404); }
-    return res.json(thing);
+
+  var github = new GitHubApi({
+    // required
+    version: "3.0.0",
+    // optional
+    debug: true,
+    protocol: "https"
   });
+  github.user.getFrom({
+    user: "stamy"
+  }, function(err, res2) {
+    return res.json(res2);
+  });
+
+//  Thing.findById(req.params.id, function (err, thing) {
+//    if(err) { return handleError(res, err); }
+//    if(!thing) { return res.send(404); }
+//    return res.json(thing);
+//  });
 };
 
 // Creates a new thing in the DB.

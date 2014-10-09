@@ -47,6 +47,12 @@ var all = {
     callbackURL:  (process.env.DOMAIN || '') + '/auth/facebook/callback'
   },
 
+  github: {
+    clientID:     process.env.GITHUB_ID || 'id',
+    clientSecret: process.env.GITHUB_SECRET || 'secret',
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/github/callback'
+  },
+
   twitter: {
     clientID:     process.env.TWITTER_ID || 'id',
     clientSecret: process.env.TWITTER_SECRET || 'secret',
