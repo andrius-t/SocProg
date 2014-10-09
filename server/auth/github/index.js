@@ -8,6 +8,7 @@ var router = express.Router();
 
 router
   .get('/', passport.authenticate('github', {
+    scope: ['user', 'repo'],
     failureRedirect: '/signup',
     session: false
   }))
