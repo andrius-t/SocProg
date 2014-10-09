@@ -1,0 +1,34 @@
+<div class="comment-list">
+    <div ng-repeat="comment in comments | orderBy: '+created' " class="comment-items" >
+
+        <div class="comment-body-container">
+            <span class="comment-body">{{comment.body}}</span>
+            </div>
+            <span class="comment-remove" data-ng-show="global.user._id == comment.user._id">
+                <a class="comment-button" data-ng-click="remove(comment);">
+                    <i class="fa fa-trash-o"></i>
+                </a>
+                <!--<a class="comment-button" data-ng-if="commentEditable" data-ng-click="editComment(comment);">
+                    <i class="fa fa-pencil"></i>
+                </a>-->
+            </span>
+        </div>
+
+    </div>
+</div>
+<div class="comment-form">
+    <form class="form-horizontal center-block">
+        <p class="input-group">
+            <span>
+                <textarea cols="30" ng-model="body" rows="1" placeholder="Write a comment..."
+                      class="form-control"></textarea>
+            </span>
+
+            <span class="input-group-btn">
+                <input type="submit" class="btn btn-default pull-right" value="Comment" ng-click="addComment(parent._id,parent.user._id,body)"/>
+            </span>
+        </p>
+    </form>
+</div>
+
+
