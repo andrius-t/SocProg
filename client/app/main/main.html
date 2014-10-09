@@ -28,7 +28,9 @@
             <ul class="nav nav-tabs nav-stacked" ng-repeat="thing in awesomeThings">
                 <li><a href="#" tooltip="{{thing.info}}"> <strong>{{thing.user.name}}</strong> {{thing.name}}
                     <button type="button" class="close" ng-click="deleteThing(thing)">&times;</button>
-                </a></li>
+                </a>
+                    <div ng-include="'components/comment/comment.html'" ng-controller="CommentCtrl" data-ng-init="findComments(thing, 2)"></div>
+                </li>
             </ul>
         </div>
         <div class="col-lg-3"></div>
