@@ -2,12 +2,14 @@ var passport = require('passport');
 var GithubStrategy = require('passport-github').Strategy;
 
 exports.setup = function (User, config) {
+  console.log(config.github);
   passport.use(new GithubStrategy({
       clientID: config.github.clientID,
       clientSecret: config.github.clientSecret,
       callbackURL: config.github.callbackURL
     },
     function (accessToken, refreshToken, profile, done) {
+      console.log(profile);
       User.findOne({
           'github.id': profile.id
         },
