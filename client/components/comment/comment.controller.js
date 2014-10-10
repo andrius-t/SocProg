@@ -50,5 +50,14 @@ angular.module('socProgApp')
           return moment(itemTime).fromNow();
 
         }
-    $scope.getCurrentUser = Auth.getCurrentUser;
+        $scope.getCurrentUser = Auth.getCurrentUser;
+        $scope.editComment = function(comment) {
+          //$scope.commentEditable = false;
+          comment.editable = true;
+        };
+        $scope.update = function(comment) {
+          delete comment.editable;
+          $http.put('/api/comments/'+comment._id, comment);
+
+        }
     });

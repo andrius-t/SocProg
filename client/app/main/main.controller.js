@@ -29,4 +29,13 @@ angular.module('socProgApp')
 
     }
     $scope.getCurrentUser = Auth.getCurrentUser;
+    $scope.editThing = function(thing) {
+      //$scope.commentEditable = false;
+      thing.editable = true;
+    };
+    $scope.update = function(thing) {
+      delete thing.editable;
+      $http.put('/api/things/'+thing._id, thing);
+
+    }
   });

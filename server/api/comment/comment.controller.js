@@ -31,16 +31,30 @@ exports.create = function(req, res) {
 
 // Updates an existing comment in the DB.
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Comment.findById(req.params.id, function (err, comment) {
-    if (err) { return handleError(res, err); }
-    if(!comment) { return res.send(404); }
-    var updated = _.merge(comment, req.body);
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.json(200, comment);
+  if (req.body.user._id.toString() === req.user._id.toString()) {
+
+    Comment.findById(req.params.id, function (err, comment) {
+
+      if (err) {
+        return handleError(res, err);
+      }
+      if (!comment) {
+        return res.send(404);
+      }
+      comment.body = req.body.body;
+      comment.changed = new Date();
+
+      comment.save(function (err) {
+        if (err) {
+          console.log(err);
+          return handleError(res, err);
+        }
+        return res.json(200, comment);
+      });
     });
-  });
+  } else {
+    return res.send(404);
+  }
 };
 
 // Deletes a comment from the DB.
