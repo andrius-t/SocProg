@@ -25,12 +25,35 @@
                 </p>
             </form>
             <h1 class="page-header">New Posts:</h1>
-            <ul class="nav nav-tabs nav-stacked" ng-repeat="thing in awesomeThings">
-                <li><a href="#" tooltip="{{thing.info}}"> <strong>{{thing.user.name}}</strong> {{thing.name}}
-                    <button type="button" class="close" ng-click="deleteThing(thing)">&times;</button>
-                </a>
-                    <div ng-include="'components/comment/comment.html'" ng-controller="CommentCtrl" data-ng-init="findComments(thing, 2)"></div>
-                </li>
+            <ul class="nav  nav-stacked" ng-repeat="thing in awesomeThings">
+                <li><div class="well">
+                    <div class="row">
+                      <div class="col-lg-1">
+                        <a href="#"><img src="assets/images/img.png" height="40" width="40" alt="Profile picture" class="img-rounded"></a>
+                      </div>
+                      <div class="col-lg-10">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <strong>{{thing.user.name}}</strong>
+                          </div>
+                          <div class="col-lg-12">
+                            {{time(thing.created)}}
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="col-lg-1">
+                        <button ng-show="getCurrentUser()._id  == thing.user._id" type="button" class="close" ng-click="deleteThing(thing)">&times;</button>
+                      </div>
+                    </div>
+                  <p class="thing-body"><span>
+                    {{thing.name}}
+                  </span></p>
+
+
+
+                    <div class="comment-div" ng-include="'components/comment/comment.html'" ng-controller="CommentCtrl" data-ng-init="findComments(thing, 2)"></div>
+                </div></li>
             </ul>
         </div>
         <div class="col-lg-3"></div>

@@ -2,16 +2,30 @@
     <div ng-repeat="comment in comments | orderBy: '+created' " class="comment-items" >
 
         <div class="comment-body-container">
-            <span class="comment-body">{{comment.body}}</span>
+          <div class="row">
+            <div class="col-lg-1">
+              <a href="#"><img src="assets/images/img.png" height="30" width="30" alt="Profile picture" class="img-rounded"></a>
             </div>
-            <span class="comment-remove" data-ng-show="global.user._id == comment.user._id">
-                <a class="comment-button" data-ng-click="remove(comment);">
-                    <i class="fa fa-trash-o"></i>
-                </a>
-                <!--<a class="comment-button" data-ng-if="commentEditable" data-ng-click="editComment(comment);">
-                    <i class="fa fa-pencil"></i>
-                </a>-->
-            </span>
+            <div class="col-lg-10">
+              <div class="row">
+                <div class="col-lg-12">
+                  <strong>{{comment.user.name}}</strong>
+                  <span>
+                    {{comment.body}}
+          </span>
+                </div>
+                <div class="col-lg-12">
+                  {{time(comment.created)}}
+                </div>
+              </div>
+
+            </div>
+            <div class="col-lg-1">
+              <button ng-show="getCurrentUser()._id  == comment.user._id" type="button" class="close" ng-click="deleteComment(comment)">&times;</button>
+            </div>
+          </div>
+
+
         </div>
 
     </div>
@@ -25,7 +39,7 @@
             </span>
 
             <span class="input-group-btn">
-                <input type="submit" class="btn btn-default pull-right" value="Comment" ng-click="addComment(parent._id,parent.user._id,body)"/>
+                <input type="submit" class="btn btn-default pull-right" value="Comment" ng-click="addComment(parent._id,body)"/>
             </span>
         </p>
     </form>

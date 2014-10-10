@@ -4,18 +4,18 @@
 'use strict';
 
 angular.module('socProgApp')
-    .controller('CommentCtrl', function ($scope, $http, socket) {
+    .controller('CommentCtrl', function ($scope, $http, socket, Auth) {
         $scope.comments = [];
 
         /*$http.get('/api/comments').success(function(comments) {
             $scope.comments = comments;
             socket.syncUpdates('comment', $scope.comments);
         });*/
-        $scope.addComment = function(parent,user,body) {
+        $scope.addComment = function(parent,body) {
             if(body === '') {
                 return;
             }
-            $http.post('/api/comments', { body: body, user : user, parent: parent });
+            $http.post('/api/comments', { body: body, parent: parent });
             this.body = '';
         };
         $scope.findComments = function(parent, number) {
@@ -46,4 +46,9 @@ angular.module('socProgApp')
         $scope.$on('$destroy', function () {
             socket.unsyncUpdates('comment'+$scope.parent._id);
         });
+        $scope.time = function (itemTime){
+          return moment(itemTime).fromNow();
+
+        }
+    $scope.getCurrentUser = Auth.getCurrentUser;
     });

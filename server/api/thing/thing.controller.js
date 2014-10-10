@@ -77,10 +77,17 @@ exports.destroy = function(req, res) {
   Thing.findById(req.params.id, function (err, thing) {
     if(err) { return handleError(res, err); }
     if(!thing) { return res.send(404); }
-    thing.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
-    });
+    if(thing.user.toString() === req.user._id.toString()) {
+      thing.remove(function (err) {
+        if (err) {
+          return handleError(res, err);
+        }
+        return res.send(204);
+      });
+
+    } else {
+      return res.send(404);
+    }
   });
 };
 
