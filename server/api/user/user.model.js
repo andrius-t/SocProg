@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var crypto = require('crypto');
+var bcrypt = require('bcryptjs');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
@@ -14,7 +14,6 @@ var UserSchema = new Schema({
   },
   hashedPassword: String,
   provider: String,
-  salt: String,
   facebook: {},
   twitter: {},
   google: {},
@@ -28,7 +27,6 @@ UserSchema
   .virtual('password')
   .set(function(password) {
     this._password = password;
-    this.salt = this.makeSalt();
     this.hashedPassword = this.encryptPassword(password);
   })
   .get(function() {
@@ -119,17 +117,7 @@ UserSchema.methods = {
    * @api public
    */
   authenticate: function(plainText) {
-    return this.encryptPassword(plainText) === this.hashedPassword;
-  },
-
-  /**
-   * Make salt
-   *
-   * @return {String}
-   * @api public
-   */
-  makeSalt: function() {
-    return crypto.randomBytes(16).toString('base64');
+    return bcrypt.compareSync(plainText, this.hashedPassword);
   },
 
   /**
@@ -140,9 +128,8 @@ UserSchema.methods = {
    * @api public
    */
   encryptPassword: function(password) {
-    if (!password || !this.salt) return '';
-    var salt = new Buffer(this.salt, 'base64');
-    return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
+    if (!password) return '';
+    return bcrypt.hashSync(password);
   }
 };
 
