@@ -12,7 +12,7 @@
 var _ = require('lodash');
 var Thing = require('./thing.model');
 var GitHubApi = require("github");
-
+var Comment = require('../comment/comment.model');
 
 
 // Get list of things
@@ -90,7 +90,11 @@ exports.destroy = function(req, res) {
         if (err) {
           return handleError(res, err);
         }
-        return res.send(204);
+        Comment.remove({parent:req.params.id},function(err){
+          if(err) { return handleError(res, err); }
+          return res.send(204);
+        });
+
       });
 
     } else {

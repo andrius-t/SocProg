@@ -5,6 +5,7 @@
 'use strict';
 
 var config = require('./environment');
+var User = require('../api/user/user.model');
 
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
@@ -33,26 +34,36 @@ module.exports = function (socketio) {
   // 1. You will need to send the token in `client/components/socket/socket.service.js`
   //
   // 2. Require authentication here:
-  // socketio.use(require('socketio-jwt').authorize({
-  //   secret: config.secrets.session,
-  //   handshake: true
-  // }));
+  socketio.use(require('socketio-jwt').authorize({
+     secret: config.secrets.session,
+     handshake: true
+   }));
 
   socketio.on('connection', function (socket) {
-    socket.address = socket.handshake.address !== null ?
-            socket.handshake.address.address + ':' + socket.handshake.address.port :
-            process.env.DOMAIN;
 
-    socket.connectedAt = new Date();
+    User.findById(socket.decoded_token._id, function (err, user) {
+      if (err) return next(err);
+      if (!user) return console.log('user not found');
 
-    // Call onDisconnect.
-    socket.on('disconnect', function () {
-      onDisconnect(socket);
-      console.info('[%s] DISCONNECTED', socket.address);
+      socket.name = user.name;
+      console.log(socketio.to);
+
+      //socket.address = socket.address !== null ?
+        //socket.handshake.address.address + ':' + socket.handshake.address.port :
+        //process.env.DOMAIN;
+      socket.connectedAt = new Date();
+
+      // Call onDisconnect.
+      socket.on('disconnect', function () {
+        onDisconnect(socket);
+        console.info('[%s] DISCONNECTED', socket.name);
+      });
+
+      // Call onConnect.
+      onConnect(socket);
+        console.info('[%s] CONNECTED', socket.name);
+      });
     });
 
-    // Call onConnect.
-    onConnect(socket);
-    console.info('[%s] CONNECTED', socket.address);
-  });
+
 };
