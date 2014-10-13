@@ -8,6 +8,10 @@ var ThingSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    changed: {
+      type: Date,
+      default: Date.now
+    },
   name: String,
   info: String,
   active: Boolean,

@@ -8,7 +8,10 @@ var Comment = require('./comment.model');
 
 exports.register = function(socket) {
   Comment.schema.post('save', function (doc) {
-    onSave(socket, doc);
+
+    doc.populate('user', 'email name', function(err, comment){
+      onSave(socket, comment);
+    });
   });
   Comment.schema.post('remove', function (doc) {
     onRemove(socket, doc);

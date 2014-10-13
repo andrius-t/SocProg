@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('socProgApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
+  .controller('MainCtrl', function ($scope, $http, socket, Auth) {
     $scope.awesomeThings = [];
 
     $http.get('/api/things').success(function(awesomeThings) {
@@ -24,4 +24,18 @@ angular.module('socProgApp')
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('thing');
     });
+    $scope.time = function (itemTime){
+      return moment(itemTime).fromNow();
+
+    }
+    $scope.getCurrentUser = Auth.getCurrentUser;
+    $scope.editThing = function(thing) {
+      //$scope.commentEditable = false;
+      thing.editable = true;
+    };
+    $scope.update = function(thing) {
+      delete thing.editable;
+      $http.put('/api/things/'+thing._id, thing);
+
+    }
   });
