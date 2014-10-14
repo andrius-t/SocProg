@@ -103,6 +103,19 @@ exports.destroy = function(req, res) {
   });
 };
 
+
+/////////////////
+/////////////////
+
+exports.profileIndex = function(req, res) {
+  Thing.find({user:req.params.id}).sort({ created: -1}).populate('user', 'email name').exec(function(err, things){
+    if(err) { return handleError(res, err); }
+    return res.json(200, things);
+  });
+};
+
+
+
 function handleError(res, err) {
   return res.send(500, err);
 }
