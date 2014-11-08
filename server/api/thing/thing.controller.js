@@ -14,7 +14,7 @@ var Thing = require('./thing.model');
 
 var config = require('../../config/environment');
 var GitHubApi = require("github");
-
+var Comment = require('../comment/comment.model');
 
 
 // Get list of things
@@ -107,7 +107,11 @@ exports.destroy = function(req, res) {
         if (err) {
           return handleError(res, err);
         }
-        return res.send(204);
+        Comment.remove({parent:req.params.id},function(err){
+          if(err) { return handleError(res, err); }
+          return res.send(204);
+        });
+
       });
 
     } else {
@@ -115,6 +119,19 @@ exports.destroy = function(req, res) {
     }
   });
 };
+
+
+/////////////////
+/////////////////
+
+exports.profileIndex = function(req, res) {
+  Thing.find({user:req.params.id}).sort({ created: -1}).populate('user', 'email name').exec(function(err, things){
+    if(err) { return handleError(res, err); }
+    return res.json(200, things);
+  });
+};
+
+
 
 function handleError(res, err) {
   return res.send(500, err);

@@ -1,0 +1,68 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-3">
+      something
+    </div>
+    <div class="col-lg-6">
+      <form ng-show="getCurrentUser()._id  == profile._id" class="thing-form">
+        <label>Post</label>
+
+        <p class="input-group">
+          <input type="text" class="form-control" placeholder="Add a new thing here." ng-model="newThing">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary" ng-click="addThing()">Post</button>
+                        </span>
+        </p>
+      </form>
+      <ul class="nav  nav-stacked" ng-repeat="thing in profileThings">
+        <li><div class="well">
+          <div class="row">
+            <div class="col-lg-1">
+              <a href="#"><img src="assets/images/img.png" height="40" width="40" alt="Profile picture" class="img-rounded"></a>
+            </div>
+            <div class="col-lg-9">
+              <div class="row">
+                <div class="col-lg-12">
+                  <strong>{{thing.user.name}}</strong>
+                </div>
+                <div class="col-lg-12">
+                  {{time(thing.created)}}
+                </div>
+              </div>
+
+            </div>
+            <div class="col-lg-2">
+              <span ng-show="getCurrentUser()._id  == thing.user._id" class="glyphicon glyphicon-remove close remove-edit" ng-click="deleteThing(thing)"></span>
+              <span ng-show="getCurrentUser()._id  == thing.user._id" class="glyphicon glyphicon-pencil close remove-edit" ng-click="editThing(thing)"></span>
+            </div>
+          </div>
+          <p class="thing-body"><span ng-if="!thing.editable">
+                    {{thing.name}}
+                  </span>
+          <div ng-if="thing.editable" ng-show="getCurrentUser()._id  == thing.user._id" >
+            <form class="form-horizontal center-block"  ng-submit="update(thing)">
+
+              <textarea name="comment" cols="30" rows="1" ng-model="thing.name" class="form-control" required></textarea>
+
+              <input type="submit" class="btn btn-default" value="Done Editing"/>
+
+
+            </form>
+          </div>
+          </p>
+
+
+
+
+          <div class="comment-div" ng-include="'components/comment/comment.html'" ng-controller="CommentCtrl" data-ng-init="findComments(thing, 2)"></div>
+        </div></li>
+      </ul>
+    </div>
+    <div class="col-lg-3">
+      something even more{{profileId}}
+    </div>
+  </div>
+</div>
+
+<div ng-include="'components/footer/footer.html'"></div>

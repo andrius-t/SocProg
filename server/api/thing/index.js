@@ -12,5 +12,9 @@ router.post('/', auth.isAuthenticated(), controller.create);
 router.put('/:id', auth.isAuthenticated(), controller.update);
 router.patch('/:id', auth.isAuthenticated(), controller.update);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
+////////////
+//////////// profile sockets
+////////////
+router.get('/profile/:id', auth.isAuthenticated(), controller.profileIndex);
 
 module.exports = router;
