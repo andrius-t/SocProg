@@ -7,12 +7,15 @@ var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
   name: String,
-  email: { type: String, lowercase: true },
   role: {
     type: String,
     default: 'user'
   },
-  hashedPassword: String,
+  local: {
+    name: String,
+    email: {type: String, lowercase: true},
+    password: String
+  },
   provider: String,
   facebook: {},
   twitter: {},
@@ -26,11 +29,20 @@ var UserSchema = new Schema({
 UserSchema
   .virtual('password')
   .set(function(password) {
-    this._password = password;
-    this.hashedPassword = this.encryptPassword(password);
+    this.local._password = password;
+    this.local.password = this.encryptPassword(password);
   })
   .get(function() {
-    return this._password;
+    return this.local._password;
+  });
+
+UserSchema
+  .virtual('email')
+  .set(function (email) {
+    this.local.email = email;
+  })
+  .get(function () {
+    return this.local.email;
   });
 
 // Public profile information
@@ -57,28 +69,31 @@ UserSchema
  * Validations
  */
 
+
+//UserSchema
+
+// Validate empty password
+UserSchema
+  .path('local.password')
+  .validate(function(password) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return password.length;
+  }, 'Password cannot be blank');
+
 // Validate empty email
 UserSchema
-  .path('email')
+.path('local.email')
   .validate(function(email) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return email.length;
   }, 'Email cannot be blank');
 
-// Validate empty password
-UserSchema
-  .path('hashedPassword')
-  .validate(function(hashedPassword) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return hashedPassword.length;
-  }, 'Password cannot be blank');
-
 // Validate email is not taken
 UserSchema
-  .path('email')
+  .path('local.email')
   .validate(function(value, respond) {
     var self = this;
-    this.constructor.findOne({email: value}, function(err, user) {
+    this.constructor.findOne({'local.email': value}, function(err, user) {
       if(err) throw err;
       if(user) {
         if(self.id === user.id) return respond(true);
@@ -86,7 +101,7 @@ UserSchema
       }
       respond(true);
     });
-}, 'The specified email address is already in use.');
+  }, 'The specified email address is already in use.');
 
 var validatePresenceOf = function(value) {
   return value && value.length;
@@ -99,7 +114,7 @@ UserSchema
   .pre('save', function(next) {
     if (!this.isNew) return next();
 
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
+    if (!validatePresenceOf(this.local.password) && authTypes.indexOf(this.provider) === -1)
       next(new Error('Invalid password'));
     else
       next();
@@ -117,7 +132,7 @@ UserSchema.methods = {
    * @api public
    */
   authenticate: function(plainText) {
-    return bcrypt.compareSync(plainText, this.hashedPassword);
+    return bcrypt.compareSync(plainText, this.local.password);
   },
 
   /**

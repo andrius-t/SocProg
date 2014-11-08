@@ -8,7 +8,7 @@ exports.setup = function (User, config) {
     },
     function(email, password, done) {
       User.findOne({
-        email: email.toLowerCase()
+        'local.email' : email.toLowerCase()
       }, function(err, user) {
         if (err) return done(err);
 
