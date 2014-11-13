@@ -14,7 +14,7 @@ exports.index = function(req, res) {
 
 // Get list of comment
 exports.show = function(req, res) {
-  Comment.find({parent:req.params.id}).sort({ created: -1}).populate('user', 'email name').exec(function(err, comment){
+  Comment.find({parent:req.params.id}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, comment){
     if(err) { return handleError(res, err); }
     return res.json(200, comment);
   });

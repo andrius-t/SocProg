@@ -8,7 +8,7 @@ var thing = require('./thing.model');
 
 exports.register = function(socket) {
   thing.schema.post('save', function (doc) {
-    doc.populate('user', 'email name', function(err, things){
+    doc.populate('user', 'picture name', function(err, things){
       onSave(socket, things);
     });
   });

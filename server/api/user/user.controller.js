@@ -5,6 +5,11 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 
+var util = require('util'),
+  fs   = require('fs-extra'),
+  formidable = require('formidable'),
+  gm = require('gm');
+
 var validationError = function(res, err) {
   return res.json(422, err);
 };
@@ -98,4 +103,61 @@ exports.me = function(req, res, next) {
  */
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
+};
+
+
+exports.image = function(req, res) {
+  var form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files) {
+    res.writeHead(200, {'content-type': 'text/plain'});
+    res.write('received upload:\n\n');
+    res.end(util.inspect({fields: fields, files: files}));
+  });
+
+  form.on('end', function(fields, files) {
+    var temp_path = this.openedFiles[0].path;
+    var file_name = req.user._id+this.openedFiles[0].name;
+    var new_location = 'client/assets/images/';
+    User.findById(req.user._id, function (err, user) {
+      if (err) return console.log(err);
+      if (!user) return console.log('notfound');
+      fs.exists(new_location+user.picture, function (exists) {
+        if (exists && (user.picture != 'img.png')) {
+          fs.unlink(new_location+user.picture, function (err) {
+            if (err) throw err;
+            gm(temp_path)
+              .resize(300, 300)
+              .noProfile()
+              .write(new_location+file_name, function (err) {
+                if (!err) {
+                  user.picture = file_name;
+                  user.save(function(err) {
+                    if (err) return validationError(res, err);
+                  });
+
+                }
+              });
+          });
+        }else {
+          gm(temp_path)
+            .resize(300, 300)
+            .noProfile()
+            .write(new_location+file_name, function (err) {
+              if (!err) {
+                user.picture = file_name;
+                user.save(function(err) {
+                  if (err) return validationError(res, err);
+
+                });
+
+              }
+            });
+        }
+      });
+
+
+    });
+
+
+  });
 };

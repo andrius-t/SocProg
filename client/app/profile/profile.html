@@ -2,7 +2,54 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-3">
-      something
+      <a ng-if="profile.picture" href="profile/{{profile._id}}"><img ng-src="assets/images/{{profile.picture}}" height="250" width="250" alt="Profile picture" class="img-rounded"></a>
+      <h4>{{profile.name}}</h4>
+      <div ng-show="getCurrentUser()._id  == profile._id">
+        <p>Change profile picture</p>
+        <input type="file" ng-file-select="onFileSelect($files)" accept="image/*">
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-lg-2">
+          <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+        </div>
+        <div class="col-lg-10">
+          {{profile.email}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2">
+          <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+        </div>
+        <div class="col-lg-10">
+          Joined on {{created(profile.created)}}
+        </div>
+      </div>
+      <hr>
+      <div class="row text-center">
+        <div class="col-lg-4">
+          <strong>{{profile.follows.length}}</strong>
+        </div>
+        <div class="col-lg-4">
+          <strong>10</strong>
+        </div>
+        <div class="col-lg-4">
+          <strong>2</strong>
+        </div>
+      </div>
+      <div class="row text-center small">
+        <div class="col-lg-4">
+          Followers
+        </div>
+        <div class="col-lg-4">
+          Following
+        </div>
+        <div class="col-lg-4">
+          Posts
+        </div>
+      </div>
+      <hr>
+
     </div>
     <div class="col-lg-6">
       <form ng-show="getCurrentUser()._id  == profile._id" class="thing-form">
@@ -19,7 +66,7 @@
         <li><div class="well">
           <div class="row">
             <div class="col-lg-1">
-              <a href="#"><img src="assets/images/img.png" height="40" width="40" alt="Profile picture" class="img-rounded"></a>
+              <a href="profile/{{thing.user._id}}"><img ng-src="assets/images/{{thing.user.picture}}" height="40" width="40" alt="Profile picture" class="img-rounded"></a>
             </div>
             <div class="col-lg-9">
               <div class="row">
@@ -60,9 +107,30 @@
       </ul>
     </div>
     <div class="col-lg-3">
-      something even more{{profileId}}
+      <div ng-show="getCurrentUser()._id  != profile._id">
+        <button type="button" class="btn btn-success">Follow</button>
+        <button ng-click="open()" type="button" class="btn btn-primary">Send Message</button>
+        <hr>
+
+      </div>
+
     </div>
   </div>
 </div>
+<!-- Modal -->
+<script type="text/ng-template" id="myModalContent.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Send Message</h3>
+  </div>
+  <div class="modal-body">
+    <textarea name="body" cols="30" rows="5" ng-model="thing.body" class="form-control" required></textarea>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok(thing)">Send</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
+
+
 
 <div ng-include="'components/footer/footer.html'"></div>

@@ -4,9 +4,11 @@
         <div class="comment-body-container">
           <div class="row">
             <div class="col-lg-1">
-              <a href="#"><img src="assets/images/img.png" height="30" width="30" alt="Profile picture" class="img-rounded"></a>
+              <a href="profile/{{comment.user._id}}"><img ng-src="assets/images/{{comment.user.picture}}" height="30" width="30" alt="Profile picture" class="img-rounded"></a>
             </div>
             <div class="col-lg-9">
+
+
               <div class="row">
                 <div class="col-lg-12">
                   <strong>{{comment.user.name}}</strong>

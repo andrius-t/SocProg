@@ -8,10 +8,19 @@ var authTypes = ['github', 'twitter', 'facebook', 'google'];
 var UserSchema = new Schema({
   name: String,
   email: { type: String, lowercase: true },
+  picture: {type: String, default: 'img.png'},
   role: {
     type: String,
     default: 'user'
   },
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  follows:    [{
+    type: Schema.ObjectId,
+    ref: 'User'
+  }],
   hashedPassword: String,
   provider: String,
   facebook: {},
@@ -39,7 +48,11 @@ UserSchema
   .get(function() {
     return {
       'name': this.name,
-      'role': this.role
+      'role': this.role,
+      'email': this.email,
+      'picture': this.picture,
+      'created': this.created,
+      'follows': this.follows
     };
   });
 

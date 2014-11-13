@@ -8,8 +8,7 @@ var Comment = require('./comment.model');
 
 exports.register = function(socket) {
   Comment.schema.post('save', function (doc) {
-
-    doc.populate('user', 'email name', function(err, comment){
+    doc.populate('user', 'picture name', function(err, comment){
       onSave(socket, comment);
     });
   });

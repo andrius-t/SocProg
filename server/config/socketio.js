@@ -6,6 +6,7 @@
 
 var config = require('./environment');
 var User = require('../api/user/user.model');
+var collection = {};
 
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
@@ -19,6 +20,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/message/message.socket').register(socket, collection);
   require('../api/comment/comment.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 }
@@ -44,10 +46,9 @@ module.exports = function (socketio) {
     User.findById(socket.decoded_token._id, function (err, user) {
       if (err) return next(err);
       if (!user) return console.log('user not found');
-
-      socket.name = user.name;
-      console.log(socketio.to);
-
+      collection[user._id] = socket;
+      socket.user = user;
+      //console.log(socketio.to);
       //socket.address = socket.address !== null ?
         //socket.handshake.address.address + ':' + socket.handshake.address.port :
         //process.env.DOMAIN;
@@ -55,13 +56,14 @@ module.exports = function (socketio) {
 
       // Call onDisconnect.
       socket.on('disconnect', function () {
+        delete collection[socket.user._id];
         onDisconnect(socket);
-        console.info('[%s] DISCONNECTED', socket.name);
+        console.info('[%s] DISCONNECTED', socket.user.name);
       });
 
       // Call onConnect.
       onConnect(socket);
-        console.info('[%s] CONNECTED', socket.name);
+        console.info('[%s] CONNECTED', socket.user.name);
       });
     });
 
