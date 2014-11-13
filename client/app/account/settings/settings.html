@@ -32,6 +32,8 @@
 
         <p class="help-block"> {{ message }} </p>
 
+        <pre>{{ Auth.getCurrentUser() | json }}</pre>
+
         <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
       </form>
     </div>

@@ -4,6 +4,8 @@ angular.module('socProgApp')
   .controller('SettingsCtrl', function ($scope, User, Auth) {
     $scope.errors = {};
 
+    $scope.Auth = Auth;
+
     $scope.changePassword = function(form) {
       $scope.submitted = true;
       if(form.$valid) {
