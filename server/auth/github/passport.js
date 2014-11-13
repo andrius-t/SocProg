@@ -1,15 +1,14 @@
 var passport = require('passport');
 var GithubStrategy = require('passport-github').Strategy;
+var _ = require('lodash');
 
 exports.setup = function (User, config) {
-  console.log(config.github);
   passport.use(new GithubStrategy({
       clientID: config.github.clientID,
       clientSecret: config.github.clientSecret,
       callbackURL: config.github.callbackURL
     },
     function (accessToken, refreshToken, profile, done) {
-      console.log(profile);
       User.findOne({
           'github.id': profile.id
         },
@@ -24,7 +23,7 @@ exports.setup = function (User, config) {
               role: 'user',
               username: profile.username,
               provider: 'github',
-              github: profile._json
+              github: {token: accessToken, shit: profile._json}
             });
             user.save(function (err) {
               if (err) done(err);

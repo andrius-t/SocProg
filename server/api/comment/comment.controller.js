@@ -46,7 +46,6 @@ exports.update = function(req, res) {
 
       comment.save(function (err) {
         if (err) {
-          console.log(err);
           return handleError(res, err);
         }
         return res.json(200, comment);

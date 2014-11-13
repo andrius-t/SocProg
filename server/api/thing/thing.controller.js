@@ -11,6 +11,8 @@
 
 var _ = require('lodash');
 var Thing = require('./thing.model');
+
+var config = require('../../config/environment');
 var GitHubApi = require("github");
 var Comment = require('../comment/comment.model');
 
@@ -26,6 +28,8 @@ exports.index = function(req, res) {
 // Get a single thing
 exports.show = function(req, res) {
 
+  //console.log(req._passport);
+
   var github = new GitHubApi({
     // required
     version: "3.0.0",
@@ -33,11 +37,24 @@ exports.show = function(req, res) {
     debug: true,
     protocol: "https"
   });
-  github.user.getFrom({
-    user: "stamy"
+
+  github.authenticate({
+    type: "oauth",
+    token: req.user.github.token
+  });
+
+    github.repos.getAll({
   }, function(err, res2) {
     return res.json(res2);
   });
+
+//  github.user.getFrom({
+//    user: "stamy"
+//  }, function(err, res2) {
+//    return res.json(res2);
+//  });
+
+
 
 //  Thing.findById(req.params.id, function (err, thing) {
 //    if(err) { return handleError(res, err); }
