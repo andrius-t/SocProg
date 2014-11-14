@@ -30,7 +30,7 @@ exports.show = function(req, res) {
 
   //console.log(req._passport);
 
-  var github = new GitHubApi({
+/*  var github = new GitHubApi({
     // required
     version: "3.0.0",
     // optional
@@ -46,7 +46,7 @@ exports.show = function(req, res) {
     github.repos.getAll({
   }, function(err, res2) {
     return res.json(res2);
-  });
+  });*/
 
 //  github.user.getFrom({
 //    user: "stamy"
@@ -95,6 +95,13 @@ exports.update = function(req, res) {
       });
     });
   }
+};
+
+exports.count = function (req,res) {
+  Thing.count({user: req.params.id}, function (err, count) {
+    if (err) return handleError(err);
+    return res.json(200, {count:count});
+  });
 };
 
 // Deletes a thing from the DB.

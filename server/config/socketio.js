@@ -8,9 +8,12 @@ var config = require('./environment');
 var User = require('../api/user/user.model');
 var collection = {};
 
+//require('../api/thing/thing.socket').send(collection);
+
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
 }
+
 
 // When the user connects.. perform this
 function onConnect(socket) {

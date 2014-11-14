@@ -8,11 +8,14 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
+router.get('/followers/:id', auth.isAuthenticated(), controller.followers);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
+router.post('/addfollower', auth.isAuthenticated(), controller.addfollower);
+router.post('/removefollower', auth.isAuthenticated(), controller.removefollower);
 router.post('/image', auth.isAuthenticated(), controller.image);
 
 module.exports = router;

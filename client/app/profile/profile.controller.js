@@ -13,6 +13,26 @@ angular.module('socProgApp')
       socket.syncUpdates('thing', $scope.profileThings);
     });
 
+    $http.get('/api/things/count/'+$stateParams.profileId).success(function(post) {
+      $scope.postCount = post.count;
+    });
+    $http.get('/api/users/followers/'+$stateParams.profileId).success(function(post) {
+      $scope.followers = post.count;
+    });
+    $scope.following = (Auth.getCurrentUser().follows.indexOf($stateParams.profileId) > -1);
+    $scope.addFollower = function (user) {
+      $http.post('/api/users/addfollower', { _id: $stateParams.profileId }).success(function() {
+        $scope.following = true;
+        $scope.followers += 1;
+      });
+    };
+    $scope.removeFollower = function (user) {
+      $http.post('/api/users/removefollower', { _id: $stateParams.profileId }).success(function() {
+        $scope.following = false;
+        $scope.followers -= 1;
+
+      });
+    };
     $scope.onFileSelect = function($files) {
       //$files: an array of files selected, each file has name, size, and type.
       for (var i = 0; i < $files.length; i++) {
@@ -28,7 +48,7 @@ angular.module('socProgApp')
           window.location.reload();
         });
       }
-    }
+    };
 
     $scope.addThing = function() {
       if($scope.newThing === '') {
@@ -63,7 +83,7 @@ angular.module('socProgApp')
       delete thing.editable;
       $http.put('/api/things/'+thing._id, thing);
 
-    }
+    };
 
     $scope.open = function (size) {
 

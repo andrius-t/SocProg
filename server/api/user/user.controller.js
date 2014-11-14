@@ -52,6 +52,33 @@ exports.show = function (req, res, next) {
   });
 };
 
+
+exports.followers = function (req, res) {
+  User.count({follows: {$in: [req.params.id]}}, function (err, count){
+    if (err) return handleError(err);
+    return res.json(200, {count:count});
+  });
+};
+
+exports.addfollower = function (req, res) {
+  User.findById(req.user._id, function (err, user){
+    user.follows.push(req.body._id);
+    user.save(function(err, user) {
+      if (err) return validationError(res, err);
+      return res.json(200);
+    });
+  });
+};
+exports.removefollower = function (req, res) {
+  User.findById(req.user._id, function (err, user){
+    user.follows.pull(req.body._id);
+    user.save(function(err, user) {
+      if (err) return validationError(res, err);
+      return res.json(200);
+    });
+  });
+};
+
 /**
  * Deletes a user
  * restriction: 'admin'

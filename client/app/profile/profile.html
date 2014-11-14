@@ -28,13 +28,13 @@
       <hr>
       <div class="row text-center">
         <div class="col-lg-4">
+          <strong>{{followers}}</strong>
+        </div>
+        <div class="col-lg-4">
           <strong>{{profile.follows.length}}</strong>
         </div>
         <div class="col-lg-4">
-          <strong>10</strong>
-        </div>
-        <div class="col-lg-4">
-          <strong>2</strong>
+          <strong>{{postCount}}</strong>
         </div>
       </div>
       <div class="row text-center small">
@@ -49,6 +49,16 @@
         </div>
       </div>
       <hr>
+      <div ng-show="getCurrentUser()._id  != profile._id">
+
+        <button ng-show="!following" type="button" class="btn btn-success " ng-click="addFollower(profile._id)">Follow</button>
+        <button ng-show="following" type="button" class="btn btn-success " ng-click="removeFollower(profile._id)">UnFollow</button>
+
+        <button ng-click="open()" type="button" class="btn btn-primary">Send Message</button>
+
+        <hr>
+
+      </div>
 
     </div>
     <div class="col-lg-6">
@@ -107,12 +117,7 @@
       </ul>
     </div>
     <div class="col-lg-3">
-      <div ng-show="getCurrentUser()._id  != profile._id">
-        <button type="button" class="btn btn-success">Follow</button>
-        <button ng-click="open()" type="button" class="btn btn-primary">Send Message</button>
-        <hr>
 
-      </div>
 
     </div>
   </div>
