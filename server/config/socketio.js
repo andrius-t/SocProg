@@ -14,6 +14,7 @@ var collection = {};
 function onDisconnect(socket) {
 }
 
+require('../api/thing/thing.socket').register(collection);
 
 // When the user connects.. perform this
 function onConnect(socket) {
@@ -26,7 +27,6 @@ function onConnect(socket) {
   require('../api/message/message.socket').register(socket, collection);
   require('../api/repo/repo.socket').register(socket);
   require('../api/comment/comment.socket').register(socket);
-  require('../api/thing/thing.socket').register(socket);
 }
 
 module.exports = function (socketio) {

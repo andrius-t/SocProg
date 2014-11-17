@@ -6,7 +6,7 @@ angular.module('socProgApp')
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+      socket.syncUpdates('main'+ Auth.getCurrentUser()._id, $scope.awesomeThings);
     });
 
     $scope.addThing = function() {
@@ -21,13 +21,10 @@ angular.module('socProgApp')
       $http.delete('/api/things/' + thing._id);
     };
 
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
-    });
     $scope.time = function (itemTime){
       return moment(itemTime).fromNow();
 
-    }
+    };
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.editThing = function(thing) {
       //$scope.commentEditable = false;

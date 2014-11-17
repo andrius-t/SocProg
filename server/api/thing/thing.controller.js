@@ -19,7 +19,8 @@ var Comment = require('../comment/comment.model');
 
 // Get list of things
 exports.index = function(req, res) {
-  Thing.find().sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
+
+  Thing.find({$or: [{user: {$in: req.user.follows}},{user: req.user._id}]}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
     if(err) { return handleError(res, err); }
     return res.json(200, things);
   });

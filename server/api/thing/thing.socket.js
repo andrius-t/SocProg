@@ -5,22 +5,42 @@
 'use strict';
 
 var thing = require('./thing.model');
-
-exports.register = function(socket) {
+var User = require('../user/user.model');
+exports.register = function(collection) {
   thing.schema.post('save', function (doc) {
-    doc.populate('user', 'picture name', function(err, things){
-      onSave(socket, things);
+    doc.populate('user', 'picture name ', function(err, things){
+      User.find({$and: [{follows: {$in: [things.user._id]}},{_id: {$in: Object.keys(collection)}}]},'_id', function(err, users){
+        if (!err){
+          onSave(collection, things, users);
+        }
+      });
     });
   });
   thing.schema.post('remove', function (doc) {
-    onRemove(socket, doc);
+    User.find({$and: [{follows: {$in: [doc.user]}},{_id: {$in: Object.keys(collection)}}]},'_id', function(err, users){
+      if (!err){
+        onRemove(collection, doc, users);
+
+      }
+    });
   });
+};
+//main, profile
+function onSave(socket, doc, users, cb) {
+  //console.log(users);
+  socket[doc.user._id].emit('main'+doc.user._id+':save', doc);
+  socket[doc.user._id].emit('profile'+doc.user._id+':save', doc);
+  for(var i in users){
+    socket[users[i]._id].emit('main'+users[i]._id+':save', doc);
+  }
+
 }
 
-function onSave(socket, doc, cb) {
-  socket.emit('thing:save', doc);
-}
-
-function onRemove(socket, doc, cb) {
-  socket.emit('thing:remove', doc);
+function onRemove(socket, doc, users, cb) {
+  //console.log(users);
+  socket[doc.user].emit('main'+doc.user+':remove', doc);
+  socket[doc.user].emit('profile'+doc.user+':remove', doc);
+  for(var i in users){
+    socket[users[i]._id].emit('main'+users[i]._id+':remove', doc);
+  }
 }

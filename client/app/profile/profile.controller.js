@@ -1,5 +1,4 @@
 'use strict';
-
 angular.module('socProgApp')
   .controller('ProfileCtrl', function ($http, $upload, socket, $modal, $scope, $stateParams, User, Auth) {
 
@@ -10,7 +9,7 @@ angular.module('socProgApp')
     $scope.getCurrentUser = Auth.getCurrentUser;
     $http.get('/api/things/profile/'+$stateParams.profileId).success(function(profileThings) {
       $scope.profileThings = profileThings;
-      socket.syncUpdates('thing', $scope.profileThings);
+      socket.syncUpdates('profile'+$stateParams.profileId, $scope.profileThings);
     });
 
     $http.get('/api/things/count/'+$stateParams.profileId).success(function(post) {
@@ -64,13 +63,9 @@ angular.module('socProgApp')
     $scope.deleteThing = function(thing) {
       $http.delete('/api/things/' + thing._id);
     };
-
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
-    });
     $scope.created = function (itemTime){
       return moment(itemTime).format("MMM Do YYYY");
-    }
+    };
     $scope.time = function (itemTime){
       return moment(itemTime).fromNow();
 

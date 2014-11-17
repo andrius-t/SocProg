@@ -149,7 +149,7 @@ exports.image = function(req, res) {
       if (err) return console.log(err);
       if (!user) return console.log('notfound');
       fs.exists(new_location+user.picture, function (exists) {
-        if (exists && (user.picture != 'img.png')) {
+        if (exists && (user.picture != 'img.jpg')) {
           fs.unlink(new_location+user.picture, function (err) {
             if (err) throw err;
             gm(temp_path)

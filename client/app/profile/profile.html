@@ -72,6 +72,19 @@
                         </span>
         </p>
       </form>
+      <form class="form-horizontal center-block">
+        <p class="input-group">
+          <span>
+              <textarea data-provide="markdown" cols="30" ng-model="body" rows="1" placeholder="Write a comment..."
+                        class="form-control"></textarea>
+          </span>
+
+          <span class="input-group-btn">
+              <input type="submit" class="btn btn-default pull-right" value="Comment" ng-click="addComment(parent._id,body)"/>
+          </span>
+        </p>
+      </form>
+
       <ul class="nav  nav-stacked" ng-repeat="thing in profileThings">
         <li><div class="well">
           <div class="row">
@@ -135,7 +148,5 @@
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
   </div>
 </script>
-
-
 
 <div ng-include="'components/footer/footer.html'"></div>
