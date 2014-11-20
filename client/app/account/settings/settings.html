@@ -32,10 +32,16 @@
 
         <p class="help-block"> {{ message }} </p>
 
-        <pre>{{ Auth.getCurrentUser() | json }}</pre>
-
         <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
       </form>
+
+      <br>
+
+      <a class="btn btn-github" ng-href="{{ github() }}" target="_self"
+         ng-class="{'disabled': Auth.getCurrentUser().github.token !== undefined}">
+        <i class="fa fa-github"></i> Connect with Github
+      </a>
+      <pre>{{ Auth.getCurrentUser() | json }}</pre>
     </div>
   </div>
 </div>

@@ -38,18 +38,13 @@ exports.setup = function (User, config) {
           })
       } else {
         // user already exists and is logged in, we have to link accounts
-        var user            = req.user; // pull the user out of the session
+        var user = req.user; // pull the user out of the session
 
-        user.github.id    = profile.id;
-        user.github.token = token;
-        user.github.name  = profile.name.givenName + ' ' + profile.name.familyName;
-        user.github.email = (profile.emails[0].value || '').toLowerCase();
+        user.github = _.merge(profile._json, {token: accessToken});
 
-        user.save(function(err) {
-          if (err)
-            return done(err);
-
-          return done(null, user);
+        user.save(function (err) {
+          if (err) done(err);
+          return done(err, user);
         });
       }
 

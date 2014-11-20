@@ -15,6 +15,7 @@ var Thing = require('./thing.model');
 var config = require('../../config/environment');
 var GitHubApi = require("github");
 var Comment = require('../comment/comment.model');
+var User = require('../user/user.model');
 
 
 // Get list of things
@@ -28,6 +29,12 @@ exports.index = function(req, res) {
 
 // Get a single thing
 exports.show = function(req, res) {
+
+
+  req.user.githubApi().repos.getAll({
+  }, function(err, res2) {
+    return res.json(res2);
+  });
 
   //console.log(req._passport);
 

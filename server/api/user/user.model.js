@@ -3,7 +3,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcryptjs');
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
+var authTypes = ['github'];
+var githubApi = require('github');
 
 var UserSchema = new Schema({
   name: String,
@@ -26,9 +27,6 @@ var UserSchema = new Schema({
     password: String
   },
   provider: String,
-  facebook: {},
-  twitter: {},
-  google: {},
   github: {}
 });
 
@@ -158,6 +156,28 @@ UserSchema.methods = {
   encryptPassword: function(password) {
     if (!password) return '';
     return bcrypt.hashSync(password);
+  },
+
+  /**
+   * Returns authenticated githubApi
+   *
+   * @returns {githubApi}
+   */
+  githubApi: function() {
+    var github = new githubApi({
+      // required
+      version: "3.0.0",
+      // optional
+      debug: true,
+      protocol: "https"
+    });
+
+    github.authenticate({
+      type: "oauth",
+      token: this.github.token
+    });
+
+    return github
   }
 };
 

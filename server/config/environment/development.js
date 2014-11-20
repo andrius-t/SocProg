@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/socprog-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };

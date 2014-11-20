@@ -50,7 +50,8 @@ var all = {
   github: {
     clientID:     process.env.GITHUB_ID || 'id',
     clientSecret: process.env.GITHUB_SECRET || 'secret',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/github/callback'
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/github/callback',
+    callbackConnectUrl: (process.env.DOMAIN || '') + '/auth/github/connect/callback'
   },
 
   twitter: {
