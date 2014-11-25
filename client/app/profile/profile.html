@@ -63,25 +63,13 @@
     </div>
     <div class="col-lg-6">
       <form ng-show="getCurrentUser()._id  == profile._id" class="thing-form">
-        <label>Post</label>
 
         <p class="input-group">
-          <input type="text" class="form-control" placeholder="Add a new thing here." ng-model="newThing">
+          <textarea cols="30" ng-model="newThing" rows="1" placeholder="Write a new Post here..."
+                    class="form-control"></textarea>
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-primary" ng-click="addThing()">Post</button>
                         </span>
-        </p>
-      </form>
-      <form class="form-horizontal center-block">
-        <p class="input-group">
-          <span>
-              <textarea data-provide="markdown" cols="30" ng-model="body" rows="1" placeholder="Write a comment..."
-                        class="form-control"></textarea>
-          </span>
-
-          <span class="input-group-btn">
-              <input type="submit" class="btn btn-default pull-right" value="Comment" ng-click="addComment(parent._id,body)"/>
-          </span>
         </p>
       </form>
 
@@ -107,13 +95,13 @@
               <span ng-show="getCurrentUser()._id  == thing.user._id" class="glyphicon glyphicon-pencil close remove-edit" ng-click="editThing(thing)"></span>
             </div>
           </div>
-          <p class="thing-body"><span ng-if="!thing.editable">
-                    {{thing.name}}
+          <p class="thing-body"><span ng-if="!thing.editable" ng-bind-html="thing.name">
+
                   </span>
           <div ng-if="thing.editable" ng-show="getCurrentUser()._id  == thing.user._id" >
             <form class="form-horizontal center-block"  ng-submit="update(thing)">
 
-              <textarea name="comment" cols="30" rows="1" ng-model="thing.name" class="form-control" required></textarea>
+              <textarea name="comment" cols="30" rows="3" ng-model="thing.edit" class="form-control" required></textarea>
 
               <input type="submit" class="btn btn-default" value="Done Editing"/>
 

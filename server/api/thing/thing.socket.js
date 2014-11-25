@@ -28,19 +28,29 @@ exports.register = function(collection) {
 //main, profile
 function onSave(socket, doc, users, cb) {
   //console.log(users);
-  socket[doc.user._id].emit('main'+doc.user._id+':save', doc);
-  socket[doc.user._id].emit('profile'+doc.user._id+':save', doc);
+  socket[doc.user._id].forEach(function(item) {
+    item.emit('main'+doc.user._id+':save', doc);
+    item.emit('profile'+doc.user._id+':save', doc);
+  });
+
   for(var i in users){
-    socket[users[i]._id].emit('main'+users[i]._id+':save', doc);
+    socket[users[i]._id].forEach(function(item) {
+      item.emit('main'+users[i]._id+':save', doc);
+    });
   }
 
 }
 
 function onRemove(socket, doc, users, cb) {
   //console.log(users);
-  socket[doc.user].emit('main'+doc.user+':remove', doc);
-  socket[doc.user].emit('profile'+doc.user+':remove', doc);
+
+  socket[doc.user].forEach(function(item) {
+    item.emit('main'+doc.user+':remove', doc);
+    item.emit('profile'+doc.user+':remove', doc);
+  });
   for(var i in users){
-    socket[users[i]._id].emit('main'+users[i]._id+':remove', doc);
+    socket[users[i]._id].forEach(function(item) {
+      item.emit('main'+users[i]._id+':remove', doc);
+    });
   }
 }

@@ -125,6 +125,15 @@ exports.me = function(req, res, next) {
   });
 };
 
+exports.searchs = function(req, res) {
+  var token = new RegExp(req.params.id, 'i');
+  User.find({$or: [{name: token},{local: {email: token}}]}, 'name picture follows', function(err, user) {
+    if (err) return next(err);
+    if (!user) return res.json(401);
+    res.json(user);
+  });
+};
+
 /**
  * Authentication callback
  */

@@ -1,7 +1,7 @@
 'use strict';
 angular.module('socProgApp')
   .controller('ProfileCtrl', function ($http, $upload, socket, $modal, $scope, $stateParams, User, Auth) {
-
+    var data = Auth.getCurrentUser().follows;
     User.get({id:$stateParams.profileId}, function (data) {
       data._id = $stateParams.profileId;
       $scope.profile = data;
@@ -18,7 +18,10 @@ angular.module('socProgApp')
     $http.get('/api/users/followers/'+$stateParams.profileId).success(function(post) {
       $scope.followers = post.count;
     });
-    $scope.following = (Auth.getCurrentUser().follows.indexOf($stateParams.profileId) > -1);
+
+    if ($stateParams.profileId !== undefined && data !== undefined) {
+      $scope.following = (data.indexOf($stateParams.profileId) > -1);
+    }
     $scope.addFollower = function (user) {
       $http.post('/api/users/addfollower', { _id: $stateParams.profileId }).success(function() {
         $scope.following = true;
@@ -71,12 +74,13 @@ angular.module('socProgApp')
 
     };
     $scope.editThing = function(thing) {
+      thing.edit = $("<div>").html(toMarkdown(thing.name)).text();
       //$scope.commentEditable = false;
       thing.editable = true;
     };
-    $scope.update = function(thing) {
+    $scope.update = function(thing, upthing) {
       delete thing.editable;
-      $http.put('/api/things/'+thing._id, thing);
+      $http.put('/api/things/'+thing._id, {name:thing.edit,user:thing.user});
 
     };
 

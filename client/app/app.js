@@ -53,4 +53,7 @@ angular.module('socProgApp', [
         }
       });
     });
+    $rootScope.isActive = function(route) {
+      return route === $location.path();
+    };
   });

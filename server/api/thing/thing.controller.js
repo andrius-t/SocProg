@@ -15,6 +15,7 @@ var Thing = require('./thing.model');
 var config = require('../../config/environment');
 var GitHubApi = require("github");
 var Comment = require('../comment/comment.model');
+var markdown = require( "markdown" ).markdown;
 var User = require('../user/user.model');
 
 
@@ -96,7 +97,7 @@ exports.create = function(req, res) {
 
   // Attach to object current user
   req.body.user = req.user;
-
+  req.body.name = markdown.toHTML(req.body.name);
   Thing.create(req.body, function(err, thing) {
     if(err) { return handleError(res, err); }
     return res.json(201, thing);
@@ -113,7 +114,7 @@ exports.update = function(req, res) {
       if (!thing) {
         return res.send(404);
       }
-      thing.name = req.body.name;
+      thing.name = markdown.toHTML(req.body.name);
       thing.changed = new Date();
       thing.save(function (err) {
         if (err) {

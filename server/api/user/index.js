@@ -8,6 +8,7 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
+router.get('/search/:id', auth.isAuthenticated(), controller.searchs);
 router.get('/followers/:id', auth.isAuthenticated(), controller.followers);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/me', auth.isAuthenticated(), controller.me);
