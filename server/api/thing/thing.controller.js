@@ -31,9 +31,29 @@ exports.index = function(req, res) {
 exports.show = function(req, res) {
 
 
-  req.user.githubApi().repos.getAll({
+  //req.user.githubApi().repos.getAll({
+  //}, function(err, res2) {
+  //  return res.json(res2);
+  //});
+
+
+  req.user.githubApi().events.getFromUserPublic({
+    user: 'Stamy',
+    headers : {
+      'If-None-Match' : '"da7e3a808716c4e2b82361b167226d69"' // naudoji etag
+    }
   }, function(err, res2) {
-    return res.json(res2);
+    // panaudoti lodash kad surasti reikiamus eventus
+    var events = res2.filter(function(event){
+      return event.type === 'PushEvent';
+    });
+
+    req.user.github_events.addToSet(events);
+    req.user.save(function (err) {
+      // saved!
+    });
+    // console.log(req.user);
+    return res.json(events);
   });
 
   //console.log(req._passport);

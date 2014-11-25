@@ -13,7 +13,7 @@ exports.setup = function (User, config) {
 
       if (!req.user) {
         User.findOne({
-            'github.id': profile.id
+            'github.profile.id': profile.id
           },
           function (err, user) {
             if (err) {
@@ -26,7 +26,10 @@ exports.setup = function (User, config) {
                 role: 'user',
                 username: profile.username,
                 provider: 'github',
-                github: _.merge(profile._json, {token: accessToken})
+                github: {
+                  profile: profile._json,
+                  token: accessToken
+                }
               });
               user.save(function (err) {
                 if (err) done(err);
@@ -40,7 +43,8 @@ exports.setup = function (User, config) {
         // user already exists and is logged in, we have to link accounts
         var user = req.user; // pull the user out of the session
 
-        user.github = _.merge(profile._json, {token: accessToken});
+        user.github.profile = profile._json;
+        user.github.token = accessToken;
 
         user.save(function (err) {
           if (err) done(err);

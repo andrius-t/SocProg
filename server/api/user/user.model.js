@@ -27,9 +27,17 @@ var UserSchema = new Schema({
     password: String
   },
   provider: String,
-  github: {}
+  github: {},
+  github_events: {type: Array},
+  github2: {
+    profile: {},
+    events: {type: Array},
+    repos: {type: Array},
+    token: {type: String}
+  }
 });
 
+// github -> user, events, repos, token
 /**
  * Virtuals
  */
@@ -160,6 +168,7 @@ UserSchema.methods = {
 
   /**
    * Returns authenticated githubApi
+   * http://mikedeboer.github.io/node-github/
    *
    * @returns {githubApi}
    */
@@ -172,13 +181,55 @@ UserSchema.methods = {
       protocol: "https"
     });
 
+
     github.authenticate({
       type: "oauth",
       token: this.github.token
     });
 
     return github
+  },
+
+  getGitHubReps: function() {
+    this.githubApi().repos.getAll({
+      type: 'public'
+    }, function(err, res) {
+
+      this.github.repos = res;
+
+      this.save(function (err) {
+        // saved!
+      });
+    });
+  },
+
+  updateGitHubEvents: function(){
+    // Issaugojimas
+    // http://stackoverflow.com/questions/15921700/mongoose-unique-values-in-nested-array-of-objects
+
+    this.githubApi().events.getFromUserPublic({
+      user: this.github.profile.login
+      //headers : {
+      //  'If-None-Match' : '"da7e3a808716c4e2b82361b167226d69"' // naudoji etag
+      //}
+    }, function(err, res) {
+
+      // filter out the events we need from github
+      var events = res.filter(function(event){
+        return event.type === 'PushEvent';
+      });
+
+      this.github.events.addToSet(events);
+
+      this.save(function (err) {
+        // saved!
+      });
+
+      // console.log(req.user);
+      //return res.json(events);
+    });
   }
+
 };
 
 module.exports = mongoose.model('User', UserSchema);
