@@ -18,24 +18,22 @@ router
     session: false
   }), auth.setTokenCookie)
 
-//TODO add Connect method (when user is logged in)
-//send to google to do the authentication
-  .get('/connect', passport.authorize('github', { scope : scope }))
+  // Connect method (when user is logged in)
+  .get('/connect', auth.isAuthenticated(), function (req, res, next) {
+    passport.authorize('github', {
+      scope: scope,
+      session: false,
+      failureRedirect: '/signup',
+      callbackURL: config.github.callbackConnectUrl + '?access_token=' + req.query.access_token
+    })(req, res, next);
+  })
 
-//the callback after google has authorized the user
-  .get('/connect/callback',
-  passport.authorize('google', {
-    successRedirect : '/settings',
-    failureRedirect : '/settings'
-  }));
-
-//TODO add Unlink method ? (NO)
-//app.get('/unlink', isLoggedIn, function(req, res) {
-//  var user          = req.user;
-//  user.google.token = undefined;
-//  user.save(function(err) {
-//    res.redirect('/profile');
-//  });
-//});
+  // The callback after github has authorized the user
+  .get('/connect/callback', auth.isAuthenticated(), passport.authorize('github', {
+    failureRedirect: '/settings',
+    session: false
+  }), function (req, res) {
+    res.redirect('/settings');
+  });
 
 module.exports = router;

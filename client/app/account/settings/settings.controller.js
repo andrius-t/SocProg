@@ -1,10 +1,14 @@
 'use strict';
 
 angular.module('socProgApp')
-  .controller('SettingsCtrl', function ($scope, User, Auth) {
+  .controller('SettingsCtrl', function ($scope, User, Auth, $cookieStore) {
     $scope.errors = {};
 
     $scope.Auth = Auth;
+
+    $scope.github = function(){
+      return '/auth/github/connect?access_token=' + $cookieStore.get('token');
+    };
 
     $scope.changePassword = function(form) {
       $scope.submitted = true;
