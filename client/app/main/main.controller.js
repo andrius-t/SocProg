@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('socProgApp')
-  .controller('MainCtrl', function ($scope, $http, socket, Auth) {
+  .controller('MainCtrl', function ($scope, $http, socket, Auth, $sce) {
     $scope.awesomeThings = [];
 
     $http.get('/api/things').success(function(awesomeThings) {
@@ -25,14 +25,16 @@ angular.module('socProgApp')
       return moment(itemTime).fromNow();
 
     };
+
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.editThing = function(thing) {
+      thing.edit = $("<div>").html(toMarkdown(thing.name)).text();
       //$scope.commentEditable = false;
       thing.editable = true;
     };
     $scope.update = function(thing) {
       delete thing.editable;
-      $http.put('/api/things/'+thing._id, thing);
+      $http.put('/api/things/'+thing._id, {name:thing.edit,user:thing.user});
 
     }
   });

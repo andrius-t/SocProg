@@ -11,11 +11,17 @@
     </div>
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
-        <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}">
-            <a ng-href="{{item.link}}">{{item.title}}</a>
+        <li ng-show="isLoggedIn()" ng-class="{active: isActive('/')}">
+            <a  ng-href="/">Home</a>
         </li>
         <li ng-show="isAdmin()" ng-class="{active: isActive('/admin')}"><a href="/admin">Admin</a></li>
       </ul>
+      <form ng-show="isLoggedIn()" class="navbar-form navbar-left" role="search" action="/search">
+        <div class="form-group">
+          <input style="width: 300px" type="text" name="q" class="form-control" placeholder="Search for people">
+        </div>
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
 
       <ul class="nav navbar-nav navbar-right">
         <li ng-hide="isLoggedIn()" ng-class="{active: isActive('/signup')}"><a href="/signup">Sign up</a></li>

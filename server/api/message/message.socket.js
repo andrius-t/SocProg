@@ -27,9 +27,13 @@ function onSave(socket, doc, cb) {
 
 function onSaveList(socket, doc, cb) {
   if (socket[doc.users[0]._id] !== undefined) {
-    socket[doc.users[0]._id].emit('messagelist' + doc.users[0]._id + ':save', doc);
+    socket[doc.users[0]._id].forEach(function(item) {
+      item.emit('messagelist' + doc.users[0]._id + ':save', doc);
+    });
   }
   if (socket[doc.users[1]._id] !== undefined) {
-    socket[doc.users[1]._id].emit('messagelist' + doc.users[1]._id + ':save', doc);
+    socket[doc.users[1]._id].forEach(function(item) {
+      item.emit('messagelist' + doc.users[1]._id + ':save', doc);
+    });
   }
 }

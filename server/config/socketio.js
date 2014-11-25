@@ -47,29 +47,29 @@ module.exports = function (socketio) {
 
   socketio.on('connection', function (socket) {
 
-    User.findById(socket.decoded_token._id, function (err, user) {
-      if (err) return next(err);
-      if (!user) return console.log('user not found');
-      collection[user._id] = socket;
-      socket.user = user;
-      //console.log(socketio.to);
-      //socket.address = socket.address !== null ?
-        //socket.handshake.address.address + ':' + socket.handshake.address.port :
-        //process.env.DOMAIN;
+      if (collection[socket.decoded_token._id] === undefined){
+        collection[socket.decoded_token._id] = [socket];
+
+      } else {
+        collection[socket.decoded_token._id].push(socket);
+      }
       socket.connectedAt = new Date();
 
       // Call onDisconnect.
       socket.on('disconnect', function () {
-        delete collection[socket.user._id];
+        var index = collection[socket.decoded_token._id].indexOf(socket);
+        if (index > -1) {
+          collection[socket.decoded_token._id].splice(index, 1);
+        }
         onDisconnect(socket);
-        console.info('[%s] DISCONNECTED', socket.user.name);
+        console.info('[%s] DISCONNECTED');
       });
 
       // Call onConnect.
       onConnect(socket);
-        console.info('[%s] CONNECTED', socket.user.name);
-      });
-    });
+      console.info('[%s] CONNECTED');
+   });
+
 
 
 };
