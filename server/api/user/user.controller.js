@@ -4,6 +4,7 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var Repo = require('../repo/repo.model');
 
 var util = require('util'),
   fs   = require('fs-extra'),
@@ -69,9 +70,58 @@ exports.addfollower = function (req, res) {
     });
   });
 };
+exports.navbar = function (req, res) {
+  User.findById(req.user._id,'menu_message menu_noti notifications' ,function (err, user){
+    if(err) return res.send(500, err);
+    res.json(200, user);
+  });
+};
+exports.follows = function (req, res) {
+  User.findById(req.user._id,'follows github_follows' ,function (err, user){
+    if(err) return res.send(500, err);
+    res.json(200, user);
+  });
+};
+exports.noti = function (req, res){
+  User.findById(req.user._id, function (err, user){
+    user.menu_noti = false;
+    user.save(function(err, user) {
+      if (err) return  res.send(500, err);
+      return res.json(200);
+    });
+  });
+};
+exports.message = function (req, res){
+  User.findById(req.user._id, function (err, user){
+    user.menu_message = false;
+    user.save(function(err, user) {
+      if (err) return  res.send(500, err);
+      return res.json(200);
+    });
+  });
+};
+
 exports.removefollower = function (req, res) {
   User.findById(req.user._id, function (err, user){
     user.follows.pull(req.body._id);
+    user.save(function(err, user) {
+      if (err) return validationError(res, err);
+      return res.json(200);
+    });
+  });
+};
+exports.github_addfollower = function (req, res) {
+  User.findById(req.user._id, function (err, user){
+    user.github_follows.push(req.body._id);
+    user.save(function(err, user) {
+      if (err) return validationError(res, err);
+      return res.json(200);
+    });
+  });
+};
+exports.github_removefollower = function (req, res) {
+  User.findById(req.user._id, function (err, user){
+    user.github_follows.pull(req.body._id);
     user.save(function(err, user) {
       if (err) return validationError(res, err);
       return res.json(200);
@@ -126,8 +176,53 @@ exports.me = function(req, res, next) {
 };
 
 exports.searchs = function(req, res) {
+
+
+  User.find({"github.token": { $exists: true }}, 'github', function(err, users) {
+    if (err) return err;
+    if (!users) return res.json(401);
+    users.forEach(function(user){
+      user.githubApi().events.getFromUserPublic({
+        user: user.github.profile.login
+        //headers : {
+        //  'If-None-Match' : '"da7e3a808716c4e2b82361b167226d69"' // naudoji etag
+        //}
+      }, function(err, res) {
+
+        // filter out the events we need from github
+        /*var events = res.filter(function(event){
+          if(event.type === 'PushEvent'){
+            Repo.findOneAndUpdate({id:event.id},event,{upsert:true},function(data){
+              console.log(data);
+            });
+          }
+          return event.type === 'PushEvent';
+
+        });*/
+        res.forEach(function(event){
+          if(event.type === 'PushEvent') {
+            Repo.findOneAndUpdate({id: event.id}, event, {upsert: true}, function (err, data) {
+              console.log(data);
+            });
+          }
+        });
+        // console.log(events);
+        //var smth = new Repo({id:1,"events":[]});
+        //smth.save();
+
+
+        /*Repo.findOne({id:1},function(err,data){
+          if (err) return err;
+          console.log(data);
+          data.events.addToSet(events);
+          data.save();
+        });*/
+      });
+    })
+  });
+
   var token = new RegExp(req.params.id, 'i');
-  User.find({$or: [{name: token},{local: {email: token}}]}, 'name picture follows', function(err, user) {
+  User.find({$or: [{name: token},{"local.email": token}]}, 'name picture follows', function(err, user) {
     if (err) return next(err);
     if (!user) return res.json(401);
     res.json(user);

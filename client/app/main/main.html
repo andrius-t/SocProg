@@ -14,7 +14,16 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-lg-3"></div>
+        <div class="col-lg-3">
+          <hr>
+          <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a ng-href="/profile/{{getCurrentUser()._id}}"><i class="fa fa-user"></i> Profile</a></li>
+            <li role="presentation"><a href="/message"><i class="fa fa-envelope"></i> Messages</a></li>
+            <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+          </ul>
+          <hr>
+          <strong style="padding-left: 10px"><i class="fa fa-users"></i> Groups</strong>
+        </div>
         <div class="col-lg-6">
             <form class="thing-form">
                 <p class="input-group">
@@ -69,7 +78,15 @@
                 </div></li>
             </ul>
         </div>
-        <div class="col-lg-3"></div>
+        <div class="col-lg-3">
+            <div ng-repeat="repo in repos">
+              <hr>
+              <i class="fa fa-github" tooltip="GitHub Account   "></i><a ng-href="https://github.com/{{repo.actor.login}}" target="_blank"> {{repo.actor.login}}</a><br>
+              <i class="fa fa-comments-o" tooltip="Comment"></i><a ng-href="https://github.com/{{repo.repo.name}}" target="_blank"> {{repo.payload.commits[0].message}}</a><br>
+              <i class="fa fa-code-fork" tooltip="Branch"></i> {{repo.payload.ref.substring(11)}}
+
+            </div>
+        </div>
 
     </div>
 

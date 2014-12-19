@@ -1,12 +1,16 @@
 'use strict';
 
 angular.module('socProgApp')
-  .controller('MainCtrl', function ($scope, $http, socket, Auth, $sce) {
+  .controller('MainCtrl', function ($scope, $http, socket, Auth) {
+
     $scope.awesomeThings = [];
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
       socket.syncUpdates('main'+ Auth.getCurrentUser()._id, $scope.awesomeThings);
+    });
+    $http.get('/api/repos').success(function(repos) {
+      $scope.repos = repos;
     });
 
     $scope.addThing = function() {

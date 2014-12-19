@@ -16,7 +16,8 @@ var config = require('../../config/environment');
 var GitHubApi = require("github");
 var Comment = require('../comment/comment.model');
 var markdown = require( "markdown" ).markdown;
-var User = require('../user/user.model');
+//var User = require('../user/user.model');
+require('./thing.socket').register();
 
 
 // Get list of things

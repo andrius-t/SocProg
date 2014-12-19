@@ -2,10 +2,10 @@
 
 var _ = require('lodash');
 var Repo = require('./repo.model');
-
 // Get list of repos
 exports.index = function(req, res) {
-  Repo.find(function (err, repos) {
+  //.sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
+  Repo.find({"repo.id": {$in: req.user.github_follows}}).sort({ created_at: -1}).exec(function (err, repos) {
     if(err) { return handleError(res, err); }
     return res.json(200, repos);
   });

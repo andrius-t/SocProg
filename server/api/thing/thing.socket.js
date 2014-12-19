@@ -6,10 +6,13 @@
 
 var thing = require('./thing.model');
 var User = require('../user/user.model');
-exports.register = function(collection) {
+var data = require('../../config/socketio');
+
+exports.register = function() {
   thing.schema.post('save', function (doc) {
-    doc.populate('user', 'picture name ', function(err, things){
-      User.find({$and: [{follows: {$in: [things.user._id]}},{_id: {$in: Object.keys(collection)}}]},'_id', function(err, users){
+    var collection = data.collection;
+    doc.populate('user', 'picture name', function(err, things){
+      User.find({$and: [{follows: {$in: [things.user._id]}},{_id: {$in: Object.keys(collection)}}]},'_id notifications menu_noti', function(err, users){
         if (!err){
           onSave(collection, things, users);
         }
@@ -17,6 +20,8 @@ exports.register = function(collection) {
     });
   });
   thing.schema.post('remove', function (doc) {
+    var collection = data.collection;
+
     User.find({$and: [{follows: {$in: [doc.user]}},{_id: {$in: Object.keys(collection)}}]},'_id', function(err, users){
       if (!err){
         onRemove(collection, doc, users);
@@ -33,9 +38,17 @@ function onSave(socket, doc, users, cb) {
     item.emit('profile'+doc.user._id+':save', doc);
   });
 
+  var notification = {from: doc.user._id, picture: doc.user.picture, message: 'New post by '+doc.user.name, url: 'profile/'+doc.user._id};
   for(var i in users){
     socket[users[i]._id].forEach(function(item) {
+
       item.emit('main'+users[i]._id+':save', doc);
+      item.emit('notification'+users[i]._id+':save', notification);
+      item.emit('noti'+users[i]._id, true);
+      users[i].notifications.push(notification);
+      users[i].menu_noti = true;
+      users[i].save();
+
     });
   }
 

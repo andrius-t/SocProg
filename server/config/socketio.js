@@ -14,7 +14,8 @@ var collection = {};
 function onDisconnect(socket) {
 }
 
-require('../api/thing/thing.socket').register(collection);
+//require('../api/thing/thing.socket').register(collection);
+//require('../api/message/message.socket').info(collection);
 
 // When the user connects.. perform this
 function onConnect(socket) {
@@ -24,9 +25,11 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
-  require('../api/message/message.socket').register(socket, collection);
+  require('../api/message/message.socket').register(socket);
   require('../api/repo/repo.socket').register(socket);
   require('../api/comment/comment.socket').register(socket);
+  //require('../api/thing/thing.socket').register(socket);
+
 }
 
 module.exports = function (socketio) {
@@ -46,7 +49,6 @@ module.exports = function (socketio) {
    }));
 
   socketio.on('connection', function (socket) {
-
       if (collection[socket.decoded_token._id] === undefined){
         collection[socket.decoded_token._id] = [socket];
 
@@ -73,3 +75,4 @@ module.exports = function (socketio) {
 
 
 };
+module.exports.collection = collection;

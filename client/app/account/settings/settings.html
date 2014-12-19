@@ -2,10 +2,8 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-lg-9">
       <h1>Change Password</h1>
-    </div>
-    <div class="col-sm-12">
       <form class="form" name="form" ng-submit="changePassword(form)" novalidate>
 
         <div class="form-group">
@@ -37,11 +35,61 @@
 
       <br>
 
+
+    </div>
+    <div class="col-lg-3">
       <a class="btn btn-github" ng-href="{{ github() }}" target="_self"
          ng-class="{'disabled': Auth.getCurrentUser().github.token !== undefined}">
         <i class="fa fa-github"></i> Connect with Github
       </a>
-      <pre>{{ Auth.getCurrentUser() | json }}</pre>
+      <div ng-show="profile.github_profile.name === undefined" class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-github"></i> GitHub Details</div>
+        <div class="panel-body">
+          <p>User is not connected to GitHub</p>
+        </div>
+      </div>
+      <div ng-show="profile.github_profile.name !== undefined"  class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-github"></i> GitHub Details</div>
+        <div class="panel-body">
+          <p>Profile: <a ng-href="{{profile.github_profile.html_url}}" target="_blank">{{profile.github_profile.name}}</a></p>
+          Public Repos: {{profile.github_profile.public_repos}}
+        </div>
+      </div>
+      <div ng-show="profile.github_profile.name !== undefined">
+        <button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Show user Repositories</button>
+        <hr>
+        <div collapse="isCollapsed">
+          <div ng-repeat="repo in profile.github_repos" class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-lg-8">
+                  <strong><a ng-href="{{repo.html_url}}" target="_blank">{{repo.name}}</a></strong>
+
+                </div>
+                <div class="col-lg-4">
+                  <button ng-show="!(github_follows.indexOf(repo.id) > -1)" type="button" class="btn btn-info btn-sm" ng-click="github_addFollower(repo.id)">Follow</button>
+                  <button ng-show="github_follows.indexOf(repo.id) > -1" type="button" class="btn btn-info btn-sm" ng-click="github_removeFollower(repo.id)">Unfollow</button>
+
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-lg-4">
+                  <i class="fa fa-star" tooltip="Stars"></i>
+                  <strong>{{repo.stargazers_count}}</strong>
+                </div>
+                <div class="col-lg-4">
+                  <i class="fa fa-eye" tooltip="Watchers"></i>
+                  <strong>{{repo.watchers_count}}</strong>
+                </div>
+                <div class="col-lg-4">
+                  <i class="fa fa-code-fork" tooltip="Forks"></i>
+                  <strong>{{repo.forks_count}}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

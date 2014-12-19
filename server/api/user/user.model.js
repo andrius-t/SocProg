@@ -21,15 +21,31 @@ var UserSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'User'
   }],
+  notifications:[{
+    message: String,
+    from: {
+      type: Schema.ObjectId,
+      ref: 'User'
+    },
+    url: String,
+    picture: String,
+    created: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  menu_noti: {type: Boolean,
+              default: false},
+  menu_message: {type: Boolean,
+                 default: false},
+  github_follows: {type: Array},
   local: {
     name: String,
     email: {type: String, lowercase: true},
     password: String
   },
   provider: String,
-  github: {},
-  github_events: {type: Array},
-  github2: {
+  github: {
     profile: {},
     events: {type: Array},
     repos: {type: Array},
@@ -70,7 +86,10 @@ UserSchema
       'email': this.local.email,
       'picture': this.picture,
       'created': this.created,
-      'follows': this.follows
+      'follows': this.follows,
+      'github_profile' : this.github.profile,
+      'github_repos' : this.github.repos,
+      'github_follows' : this.github_follows
     };
   });
 
@@ -191,44 +210,20 @@ UserSchema.methods = {
   },
 
   getGitHubReps: function() {
+    var _this = this;
     this.githubApi().repos.getAll({
       type: 'public'
     }, function(err, res) {
 
-      this.github.repos = res;
+      _this.github.repos = res;
 
-      this.save(function (err) {
+      _this.save(function (err) {
         // saved!
       });
     });
   },
 
-  updateGitHubEvents: function(){
-    // Issaugojimas
-    // http://stackoverflow.com/questions/15921700/mongoose-unique-values-in-nested-array-of-objects
 
-    this.githubApi().events.getFromUserPublic({
-      user: this.github.profile.login
-      //headers : {
-      //  'If-None-Match' : '"da7e3a808716c4e2b82361b167226d69"' // naudoji etag
-      //}
-    }, function(err, res) {
-
-      // filter out the events we need from github
-      var events = res.filter(function(event){
-        return event.type === 'PushEvent';
-      });
-
-      this.github.events.addToSet(events);
-
-      this.save(function (err) {
-        // saved!
-      });
-
-      // console.log(req.user);
-      //return res.json(events);
-    });
-  }
 
 };
 

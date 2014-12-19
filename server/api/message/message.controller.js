@@ -4,6 +4,7 @@ var _ = require('lodash');
 var Message = require('./message.model');
 var User = require('../user/user.model');
 var MessageList = require('./messagelist.model');
+var data = require('../../config/socketio');
 
 // Get list of messages
 exports.index = function(req, res) {
@@ -15,7 +16,6 @@ exports.index = function(req, res) {
     });
   });
 };
-
 // Get list of messages
 exports.seen = function(req, res) {
   MessageList.findOne({$and: [{users: {$in: [req.user._id]}},{_id: req.params.id}]}).exec(function(err, list){
@@ -23,7 +23,9 @@ exports.seen = function(req, res) {
     list.seen = true;
     list.save(function (err) {
       if (err) { return handleError(res, err); }
-      require('./message.socket').registers(list);
+      var collection = data.collection;
+      require('./message.socket').socket(list, collection);
+
       return res.json(200, list);
     });
   });
@@ -40,6 +42,7 @@ exports.show = function(req, res) {
 
 // Creates a new message in the DB.
 exports.create = function(req, res) {
+
   if (req.body.to != req.user._id) {
     var listm = {};
     listm.users = [req.body.to, req.user._id];
@@ -50,7 +53,10 @@ exports.create = function(req, res) {
       if (err) {
         return handleError(res, err);
       }
-      require('./message.socket').registers(list);
+      var collection = data.collection;
+
+      require('./message.socket').socket(list, collection);
+
       req.body.list = list._id;
       req.body.from = req.user._id; 
       Message.create(req.body, function (err, message) {

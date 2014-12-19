@@ -5,14 +5,14 @@
       <ul class="nav nav-pills nav-stacked" ng-repeat="message in list |  orderBy: '-updated'">
 
         <li ng-repeat-start="user in message.users" ng-show="getCurrentUser()._id != user._id" ng-class="{active:isActive(message._id)}"><a ng-click="openChat(message._id, user._id)" href="message#{{message._id}}">{{user.name}}<span ng-show="!message.seen && (message.last != getCurrentUser()._id)" class="chat-img pull-right">
-                            <img src="http://placehold.it/100/55C1E7/fff&text=NEW" height="20" width="20" alt="User Avatar" class="img-circle" />
+                            <img src="assets/images/new.gif" height="20" width="20" alt="User Avatar" class="img-circle" />
                         </span></a></li>
         <li ng-repeat-end class="divider"></li>
       </ul>
     </div>
     <div ng-show="!messages.length" class="col-lg-6 well">You do not have any message</div>
     <div ng-show="messages.length" class="col-lg-6 well">
-      <div class="panel-body" scroll-glue>
+      <div class="panel-body panel-bodys" scroll-glue>
         <ul class="chat" ng-repeat="message in messages | orderBy: '+created' ">
           <li class="left clearfix" ng-show="getCurrentUser()._id  != message.from._id"><span class="chat-img pull-left">
                             <a href="profile/{{message.from._id}}"><img ng-src="assets/images/{{message.from.picture}}" height="50" width="50" alt="User Avatar" class="img-circle" /></a>
@@ -52,7 +52,56 @@
       </div>
     </div>
     <div class="col-lg-3">
-      something more
+
+      <div ng-show="profile.github_profile.name === undefined" class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-github"></i> GitHub Details</div>
+        <div class="panel-body">
+          <p>User is not connected to GitHub</p>
+        </div>
+      </div>
+      <div ng-show="profile.github_profile.name !== undefined"  class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-github"></i> GitHub Details</div>
+        <div class="panel-body">
+          <p>Profile: <a ng-href="{{profile.github_profile.html_url}}" target="_blank">{{profile.github_profile.name}}</a></p>
+          Public Repos: {{profile.github_profile.public_repos}}
+        </div>
+      </div>
+      <div ng-show="profile.github_profile.name !== undefined">
+        <button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Show user Repositories</button>
+        <hr>
+        <div collapse="isCollapsed">
+          <div ng-repeat="repo in profile.github_repos" class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-lg-8">
+                  <strong><a ng-href="{{repo.html_url}}" target="_blank">{{repo.name}}</a></strong>
+
+                </div>
+                <div class="col-lg-4">
+                  <button ng-show="!(github_follows.indexOf(repo.id) > -1)" type="button" class="btn btn-info btn-sm" ng-click="github_addFollower(repo.id)">Follow</button>
+                  <button ng-show="github_follows.indexOf(repo.id) > -1" type="button" class="btn btn-info btn-sm" ng-click="github_removeFollower(repo.id)">Unfollow</button>
+
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-lg-4">
+                  <i class="fa fa-star" tooltip="Stars"></i>
+                  <strong>{{repo.stargazers_count}}</strong>
+                </div>
+                <div class="col-lg-4">
+                  <i class="fa fa-eye" tooltip="Watchers"></i>
+                  <strong>{{repo.watchers_count}}</strong>
+                </div>
+                <div class="col-lg-4">
+                  <i class="fa fa-code-fork" tooltip="Forks"></i>
+                  <strong>{{repo.forks_count}}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

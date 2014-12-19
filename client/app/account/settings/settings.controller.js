@@ -5,7 +5,10 @@ angular.module('socProgApp')
     $scope.errors = {};
 
     $scope.Auth = Auth;
-
+    User.get(function (data) {
+      console.log(data.github_profile);
+      $scope.profile = data;
+    });
     $scope.github = function(){
       return '/auth/github/connect?access_token=' + $cookieStore.get('token');
     };

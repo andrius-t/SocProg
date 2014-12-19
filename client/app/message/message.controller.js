@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('socProgApp')
-  .controller('MessageCtrl', function ($scope, $http, socket, Auth, $anchorScroll, $location) {
+  .controller('MessageCtrl', function ($scope, $http, socket, Auth, $anchorScroll, $location, User) {
     $scope.thing = {};
     $scope.messages = [];
     var current;
+    $scope.isCollapsed = true;
     $scope.getCurrentUser = Auth.getCurrentUser;
     $http.get('/api/messages').success(function(messages) {
 
@@ -39,9 +40,15 @@ angular.module('socProgApp')
     $scope.isActive = function(route) {
       return route === $location.hash();
     };
+    function getuser (user) {
+      User.get({id:user}, function (data) {
+        $scope.profile = data;
+      });
+    };
     $scope.openChat = function (id, user) {
       socket.unsyncUpdates('message'+current);
       current = id;
+      getuser(user);
       $scope.thing.to = user;
       $http.post('/api/messages/'+id);
       $http.get('/api/messages/'+id ).success(function(messages) {

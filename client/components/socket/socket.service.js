@@ -14,7 +14,6 @@ angular.module('socProgApp')
     var socket = socketFactory({
       ioSocket: ioSocket
     });
-
     return {
       socket: socket,
 

@@ -49,7 +49,7 @@ angular.module('socProgApp')
         $scope.time = function (itemTime){
           return moment(itemTime).fromNow();
 
-        }
+        };
         $scope.getCurrentUser = Auth.getCurrentUser;
         $scope.editComment = function(comment) {
           //$scope.commentEditable = false;

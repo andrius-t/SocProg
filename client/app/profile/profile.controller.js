@@ -1,11 +1,18 @@
 'use strict';
 angular.module('socProgApp')
   .controller('ProfileCtrl', function ($http, $upload, socket, $modal, $scope, $stateParams, User, Auth) {
-    var data = Auth.getCurrentUser().follows;
+    var data;
+    //$scope.github_follows = Auth.getCurrentUser().github_follows;
+    $http.get('/api/users/follows').success(function(follows) {
+      data = follows.follows;
+      $scope.github_follows = follows.github_follows;
+    });
+
     User.get({id:$stateParams.profileId}, function (data) {
       data._id = $stateParams.profileId;
       $scope.profile = data;
     });
+    $scope.isCollapsed = true;
     $scope.getCurrentUser = Auth.getCurrentUser;
     $http.get('/api/things/profile/'+$stateParams.profileId).success(function(profileThings) {
       $scope.profileThings = profileThings;
@@ -33,6 +40,19 @@ angular.module('socProgApp')
         $scope.following = false;
         $scope.followers -= 1;
 
+      });
+    };
+    $scope.github_addFollower = function (id) {
+      $http.post('/api/users/github/addfollower', { _id: id}).success(function() {
+        $scope.github_follows.push(id);
+      });
+    };
+    $scope.github_removeFollower = function (id) {
+      $http.post('/api/users/github/removefollower', { _id: id}).success(function() {
+        var index = $scope.github_follows.indexOf(id);
+        if (index > -1) {
+          $scope.github_follows.splice(index, 1);
+        }
       });
     };
     $scope.onFileSelect = function($files) {

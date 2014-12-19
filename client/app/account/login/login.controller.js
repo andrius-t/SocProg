@@ -15,7 +15,9 @@ angular.module('socProgApp')
         })
         .then( function() {
           // Logged in, redirect to home
-          $location.path('/');
+            window.location.replace('/');
+          //$location.path('/');
+
         })
         .catch( function(err) {
           $scope.errors.other = err.message;
