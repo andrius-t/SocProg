@@ -3,10 +3,9 @@
 angular.module('socProgApp')
   .controller('SettingsCtrl', function ($scope, User, Auth, $cookieStore) {
     $scope.errors = {};
-
+    $scope.isCollapsed = true;
     $scope.Auth = Auth;
-    User.get(function (data) {
-      console.log(data.github_profile);
+    User.get({id:Auth.getCurrentUser()._id}, function (data) {
       $scope.profile = data;
     });
     $scope.github = function(){

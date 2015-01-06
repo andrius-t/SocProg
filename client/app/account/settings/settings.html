@@ -28,6 +28,7 @@
           </p>
         </div>
 
+
         <p class="help-block"> {{ message }} </p>
 
         <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
@@ -38,17 +39,16 @@
 
     </div>
     <div class="col-lg-3">
-      <a class="btn btn-github" ng-href="{{ github() }}" target="_self"
-         ng-class="{'disabled': Auth.getCurrentUser().github.token !== undefined}">
+      <a ng-show="profile.github_profile.name === undefined" class="btn btn-github" ng-href="{{ github() }}" target="_self">
         <i class="fa fa-github"></i> Connect with Github
       </a>
-      <div ng-show="profile.github_profile.name === undefined" class="panel panel-default">
+      <div style="margin-top: 30px" ng-show="profile.github_profile.name === undefined" class="panel panel-default">
         <div class="panel-heading"><i class="fa fa-github"></i> GitHub Details</div>
         <div class="panel-body">
-          <p>User is not connected to GitHub</p>
+          <p>You are not connected to GitHub</p>
         </div>
       </div>
-      <div ng-show="profile.github_profile.name !== undefined"  class="panel panel-default">
+      <div style="margin-top: 30px" ng-show="profile.github_profile.name !== undefined"  class="panel panel-default">
         <div class="panel-heading"><i class="fa fa-github"></i> GitHub Details</div>
         <div class="panel-body">
           <p>Profile: <a ng-href="{{profile.github_profile.html_url}}" target="_blank">{{profile.github_profile.name}}</a></p>
