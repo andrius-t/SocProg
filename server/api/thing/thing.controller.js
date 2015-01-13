@@ -23,7 +23,7 @@ require('./thing.socket').register();
 // Get list of things
 exports.index = function(req, res) {
 
-  Thing.find({$or: [{user: {$in: req.user.follows}},{user: req.user._id}]}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
+  Thing.find({$and:[{$or: [{user: {$in: req.user.follows}},{user: req.user._id}]},{group:{$exists: false}}]}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
     if(err) { return handleError(res, err); }
     return res.json(200, things);
   });
@@ -104,6 +104,12 @@ exports.create = function(req, res) {
     return res.json(201, thing);
   });
 };
+exports.group = function(req, res){
+  Thing.find({group:req.params.id}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
+    if(err) { return handleError(res, err); }
+    return res.json(200, things);
+  });
+};
 
 // Updates an existing thing in the DB.
 exports.update = function(req, res) {
@@ -162,7 +168,7 @@ exports.destroy = function(req, res) {
 /////////////////
 
 exports.profileIndex = function(req, res) {
-  Thing.find({user:req.params.id}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
+  Thing.find({$and:[{user:req.params.id},{group:{$exists: false}}]}).sort({ created: -1}).populate('user', 'picture name').exec(function(err, things){
     if(err) { return handleError(res, err); }
     return res.json(200, things);
   });

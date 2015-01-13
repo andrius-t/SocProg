@@ -6,30 +6,70 @@
 
 var thing = require('./thing.model');
 var User = require('../user/user.model');
+var Group = require('../group/group.model');
 var data = require('../../config/socketio');
 
 exports.register = function() {
   thing.schema.post('save', function (doc) {
     var collection = data.collection;
     doc.populate('user', 'picture name', function(err, things){
-      User.find({$and: [{follows: {$in: [things.user._id]}},{_id: {$in: Object.keys(collection)}}]},'_id notifications menu_noti', function(err, users){
-        if (!err){
-          onSave(collection, things, users);
-        }
-      });
+      if(things.group === undefined) {
+        User.find({$and: [
+          {follows: {$in: [things.user._id]}},
+          {_id: {$in: Object.keys(collection)}}
+        ]}, '_id notifications menu_noti', function (err, users) {
+          if (!err) {
+              onSave(collection, things, users);
+          }
+        });
+      }else {
+        Group.findOne({_id : things.group}, function(err, group){
+          if(!err){
+            User.find({$and:[{_id:{$in: Object.keys(collection)}},{_id:{$in: group.users}}]}, '_id notifications menu_noti',function(err, users){
+              //console.log(users);
+              onSaveGroup(collection, things, users);
+
+            });
+            //onSaveGroup(collection, things, users.users);
+          }
+        });
+      }
     });
   });
   thing.schema.post('remove', function (doc) {
     var collection = data.collection;
+    if(doc.group === undefined) {
+      User.find({$and: [
+        {follows: {$in: [doc.user]}},
+        {_id: {$in: Object.keys(collection)}}
+      ]}, '_id', function (err, users) {
+        if (!err) {
+            onRemove(collection, doc, users);
 
-    User.find({$and: [{follows: {$in: [doc.user]}},{_id: {$in: Object.keys(collection)}}]},'_id', function(err, users){
-      if (!err){
-        onRemove(collection, doc, users);
+        }
+      });
+    }else{
+      Group.findOne({_id : doc.group}, function(err, group){
+        if(!err){
+          User.find({$and:[{_id:{$in: Object.keys(collection)}},{_id:{$in: group.users}}]},'_id notifications menu_noti', function(err, users){
+            //console.log(users);
+            onRemoveGroup(collection, doc, users);
 
-      }
-    });
+          });
+        }
+      });
+    }
   });
 };
+function onSaveGroup(socket, doc, users, cb){
+  for(var i in users) {
+    //console.log(users[i]);
+    socket[users[i]._id].forEach(function (item) {
+      item.emit('group' + doc.group + ':save', doc);
+    });
+  }
+
+}
 //main, profile
 function onSave(socket, doc, users, cb) {
   //console.log(users);
@@ -64,6 +104,15 @@ function onRemove(socket, doc, users, cb) {
   for(var i in users){
     socket[users[i]._id].forEach(function(item) {
       item.emit('main'+users[i]._id+':remove', doc);
+    });
+  }
+}
+
+function onRemoveGroup(socket, doc, users, cb) {
+
+  for(var i in users){
+    socket[users[i]._id].forEach(function(item) {
+      item.emit('group'+doc.group+':remove', doc);
     });
   }
 }

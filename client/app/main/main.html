@@ -1,16 +1,5 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<!--
-<header class="hero-unit" id="banner">
-    <div class="container">
-        <h1>'Allo, 'Allo!</h1>
-
-        <p class="lead">Kick-start your next web app with Angular Fullstack</p>
-        <img src="assets/images/yeoman.png" alt="I'm Yeoman">
-    </div>
-</header>
--->
-
 <div class="container">
 
     <div class="row">
@@ -22,7 +11,19 @@
             <li role="presentation"><a href="/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
           </ul>
           <hr>
-          <strong style="padding-left: 10px"><i class="fa fa-users"></i> Groups</strong>
+          <div class="row">
+              <div class="col-lg-6">
+                <strong style="padding-left: 10px"><i class="fa fa-users"></i> Groups</strong>
+              </div>
+              <div class="col-lg-6 text-right">
+                <a ng-click="open()" class="text-right"><i class="fa fa-plus"></i> Create Group</a>
+              </div>
+          </div>
+          <ul class="nav nav-pills nav-stacked">
+            <li ng-repeat="group in groups | orderBy: '-created'" role="presentation"><a ng-href="group/{{group._id}}">{{group.name}}</a></li>
+          </ul>
+
+
         </div>
         <div class="col-lg-6">
             <form class="thing-form">
@@ -92,6 +93,21 @@
 
 
 </div>
+<!-- Modal -->
+<script type="text/ng-template" id="myModalContent.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Create Group</h3>
+  </div>
+  <div class="modal-body">
+    <strong>Group name</strong>
+    <br>
+    <input type="text" name="name" ng-model="thing.name" class="form-control" required></input>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok(thing)">Create</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
 
 
 <div ng-include="'components/footer/footer.html'"></div>

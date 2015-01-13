@@ -176,51 +176,6 @@ exports.me = function(req, res, next) {
 };
 
 exports.searchs = function(req, res) {
-
-
-  User.find({"github.token": { $exists: true }}, 'github', function(err, users) {
-    if (err) return err;
-    if (!users) return res.json(401);
-    users.forEach(function(user){
-      user.githubApi().events.getFromUserPublic({
-        user: user.github.profile.login
-        //headers : {
-        //  'If-None-Match' : '"da7e3a808716c4e2b82361b167226d69"' // naudoji etag
-        //}
-      }, function(err, res) {
-
-        // filter out the events we need from github
-        /*var events = res.filter(function(event){
-          if(event.type === 'PushEvent'){
-            Repo.findOneAndUpdate({id:event.id},event,{upsert:true},function(data){
-              console.log(data);
-            });
-          }
-          return event.type === 'PushEvent';
-
-        });*/
-        res.forEach(function(event){
-          if(event.type === 'PushEvent') {
-            Repo.findOneAndUpdate({id: event.id}, event, {upsert: true}, function (err, data) {
-              console.log(data);
-            });
-          }
-        });
-        // console.log(events);
-        //var smth = new Repo({id:1,"events":[]});
-        //smth.save();
-
-
-        /*Repo.findOne({id:1},function(err,data){
-          if (err) return err;
-          console.log(data);
-          data.events.addToSet(events);
-          data.save();
-        });*/
-      });
-    })
-  });
-
   var token = new RegExp(req.params.id, 'i');
   User.find({$or: [{name: token},{"local.email": token}]}, 'name picture follows', function(err, user) {
     if (err) return next(err);
@@ -292,3 +247,28 @@ exports.image = function(req, res) {
 
   });
 };
+function timerMethod() {
+  User.find({"github.token": { $exists: true }}, 'github', function(err, users) {
+    if (err) return err;
+    if (!users) return res.json(401);
+    users.forEach(function(user){
+      user.githubApi().events.getFromUserPublic({
+        user: user.github.profile.login
+        //headers : {
+        //  'If-None-Match' : '"da7e3a808716c4e2b82361b167226d69"' // naudoji etag
+        //}
+      }, function(err, res) {
+
+        res.forEach(function(event){
+          if(event.type === 'PushEvent') {
+            Repo.findOneAndUpdate({id: event.id}, event, {upsert: true}, function (err, data) {
+              //console.log(data);
+            });
+          }
+        });
+      });
+      user.getGitHubReps();
+    })
+  });
+}
+var timerId = setInterval(timerMethod, 60000);

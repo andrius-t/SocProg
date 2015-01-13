@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('socProgApp')
-  .controller('MainCtrl', function ($scope, $http, socket, Auth) {
+  .controller('MainCtrl', function ($scope, $http, socket,$modal, Auth) {
 
     $scope.awesomeThings = [];
 
@@ -11,6 +11,9 @@ angular.module('socProgApp')
     });
     $http.get('/api/repos').success(function(repos) {
       $scope.repos = repos;
+    });
+    $http.get('/api/groups').success(function(groups) {
+      $scope.groups = groups;
     });
 
     $scope.addThing = function() {
@@ -41,4 +44,32 @@ angular.module('socProgApp')
       $http.put('/api/things/'+thing._id, {name:thing.edit,user:thing.user});
 
     }
+    $scope.open = function (size) {
+
+      var modalInstance = $modal.open({
+        templateUrl: 'myModalContent.html',
+        controller: 'ModalInstanceCtrl1',
+        size: size
+      });
+    };
   });
+angular.module('socProgApp').controller('ModalInstanceCtrl1', function ($http, $scope, $modalInstance) {
+
+  $scope.ok = function (item) {
+
+    if($scope.thing.body == '') {
+      return;
+    }
+    $http.post('/api/groups', item).
+      success(function(data, status, headers, config) {
+        $scope.thing.name = '';
+        window.location.replace('group/'+data._id);
+        $modalInstance.close();
+      })
+
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});

@@ -216,7 +216,7 @@ UserSchema.methods = {
     }, function(err, res) {
 
       _this.github.repos = res;
-
+      console.log(_this.github.repos);
       _this.save(function (err) {
         // saved!
       });
