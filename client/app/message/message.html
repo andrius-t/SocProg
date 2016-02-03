@@ -76,6 +76,10 @@
                   <strong><a ng-href="{{repo.html_url}}" target="_blank">{{repo.name}}</a></strong>
 
                 </div>
+                <div class="col-lg-4">
+                  <button ng-show="!(github_follows.indexOf(repo.id) > -1)" type="button" class="btn btn-info btn-sm" ng-click="github_addFollower(repo.id)">Follow</button>
+                  <button ng-show="github_follows.indexOf(repo.id) > -1" type="button" class="btn btn-info btn-sm" ng-click="github_removeFollower(repo.id)">Unfollow</button>
+                </div>
               </div>
               <div class="row text-center">
                 <div class="col-lg-4">
