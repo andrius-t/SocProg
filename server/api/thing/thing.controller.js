@@ -134,7 +134,7 @@ exports.update = function(req, res) {
 };
 
 exports.count = function (req,res) {
-  Thing.count({user: req.params.id}, function (err, count) {
+  Thing.count({$and:[{user: req.params.id},{group:undefined}]}, function (err, count) {
     if (err) return handleError(err);
     return res.json(200, {count:count});
   });

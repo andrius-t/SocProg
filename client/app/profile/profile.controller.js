@@ -25,10 +25,10 @@ angular.module('socProgApp')
     $http.get('/api/users/followers/'+$stateParams.profileId).success(function(post) {
       $scope.followers = post.count;
     });
+    $http.get('/api/users/following/'+$stateParams.profileId).success(function(post) {
 
-    if ($stateParams.profileId !== undefined && data !== undefined) {
-      $scope.following = (data.indexOf($stateParams.profileId) > -1);
-    }
+      $scope.following = post.count;
+    });
     $scope.addFollower = function (user) {
       $http.post('/api/users/addfollower', { _id: $stateParams.profileId }).success(function() {
         $scope.following = true;
@@ -67,7 +67,8 @@ angular.module('socProgApp')
           console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
         }).success(function(data, status, headers, config) {
           // file is uploaded successfully
-          window.location.reload();
+          window.setTimeout(function(){location.reload(true)},1500);
+          //setTimeout(window.location.reload, 4000);
         });
       }
     };
@@ -95,7 +96,6 @@ angular.module('socProgApp')
     };
     $scope.editThing = function(thing) {
       thing.edit = $("<div>").html(toMarkdown(thing.name)).text();
-      //$scope.commentEditable = false;
       thing.editable = true;
     };
     $scope.update = function(thing, upthing) {
@@ -123,7 +123,7 @@ angular.module('socProgApp').controller('ModalInstanceCtrl', function ($http, $s
       return;
     }
     item.to = $stateParams.profileId;
-    console.log(item)
+    console.log(item);
     $http.post('/api/messages', item).
       success(function(data, status, headers, config) {
         $scope.thing.body = '';

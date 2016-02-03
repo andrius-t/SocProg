@@ -2,6 +2,7 @@
 
 var User = require('./user.model');
 var passport = require('passport');
+var bcrypt = require('bcryptjs');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var Repo = require('../repo/repo.model');
@@ -56,6 +57,14 @@ exports.show = function (req, res, next) {
 
 exports.followers = function (req, res) {
   User.count({follows: {$in: [req.params.id]}}, function (err, count){
+    if (err) return handleError(err);
+    return res.json(200, {count:count});
+  });
+};
+
+
+exports.following = function (req, res) {
+  User.count({$and:[{_id : req.user._id},{follows: {$in: [req.params.id]}}]}, function (err, count){
     if (err) return handleError(err);
     return res.json(200, {count:count});
   });
@@ -150,7 +159,7 @@ exports.changePassword = function(req, res, next) {
 
   User.findById(userId, function (err, user) {
     if(user.authenticate(oldPass)) {
-      user.local.password = newPass;
+      user.local.password = bcrypt.hashSync(newPass);
       user.save(function(err) {
         if (err) return validationError(res, err);
         res.send(200);

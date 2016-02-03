@@ -7,23 +7,20 @@ angular.module('socProgApp')
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
     $scope.getCurrentUser = Auth.getCurrentUser;
-    $http.get('/api/users/navbar').success(function(items){
-      $scope.notifications = items.notifications;
-      socket.syncUpdates('notification'+items._id, $scope.notifications);
-      $scope.noti = items.menu_noti;
-      $scope.message = items.menu_message;
-      if ($location.path() === '/message' && $scope.message === true){
-        $http.post('/api/users/message').success(function(){
-          $scope.message = false;
-        });
-      }
+    if (Auth.isLoggedIn()) {
+      $http.get('/api/users/navbar').success(function (items) {
+        $scope.notifications = items.notifications;
+        socket.syncUpdates('notification' + items._id, $scope.notifications);
+        $scope.noti = items.menu_noti;
+        $scope.message = items.menu_message;
+        if ($location.path() === '/message' && $scope.message === true) {
+          $http.post('/api/users/message').success(function () {
+            $scope.message = false;
+          });
+        }
 
-    });
-
-
-
-
-
+      });
+    }
     socket.socket.on('noti'+Auth.getCurrentUser()._id, function (item) {
       $scope.noti = item
     });
@@ -38,12 +35,6 @@ angular.module('socProgApp')
     $scope.isActive = function(route) {
       return route === $location.path();
     };
-    /*if('/message' !== $location.path()){
-      socket.socket.on('message' + Auth.getCurrentUser()._id + ':save', function (item) {
-        console.log('yup');
-      });
-
-    }*/
     $scope.notification = function(){
       if($scope.noti) {
         $http.post('/api/users/notification').success(function () {

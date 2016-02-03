@@ -12,6 +12,7 @@ router.get('/navbar', auth.isAuthenticated(), controller.navbar);
 router.get('/follows', auth.isAuthenticated(), controller.follows);
 router.get('/search/:id', auth.isAuthenticated(), controller.searchs);
 router.get('/followers/:id', auth.isAuthenticated(), controller.followers);
+router.get('/following/:id', auth.isAuthenticated(), controller.following);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 router.get('/me', auth.isAuthenticated(), controller.me);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
